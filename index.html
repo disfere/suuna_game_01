@@ -221,12 +221,12 @@ button.small {
 }
 
 .upgrade-row {
-    display: grid;
-    grid-template-columns: 1fr auto auto;
-    gap: 6px;
-    align-items: center;
-    margin-bottom: 6px;
-    font-size: 13px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:6px;
+    margin-bottom:6px;
+    font-size:13px;
 }
 
 .hidden {
@@ -254,6 +254,45 @@ button.small {
     opacity: 0.65;
     font-size: 11px;
     margin-top: 10px;
+}
+.modalOverlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.75);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:999;
+    padding:16px;
+}
+
+.modalContent{
+    width:100%;
+    max-width:520px;
+    max-height:85vh;
+    overflow-y:auto;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(30,40,35,0.98),
+            rgba(10,15,12,0.98)
+        );
+
+    border:1px solid rgba(255,255,255,0.15);
+    border-radius:20px;
+    padding:16px;
+}
+
+.modalTitle{
+    font-size:20px;
+    margin-bottom:12px;
+    text-align:center;
+}
+
+.closeBtn{
+    width:100%;
+    margin-top:14px;
 }
 </style>
 </head>
@@ -310,33 +349,14 @@ button.small {
             <div class="button-grid">
                 <button onclick="showAdventureOptions()">冒険する</button>
                 <button class="danger" onclick="startNoiseBattle()">NOISEに挑む</button>
+                <button onclick="openUpgrade()">強化</button>
+                <button onclick="openStatus()">ステータス</button>
             </div>
         </div>
 
         <div id="adventureArea" class="card hidden">
             <p>どの道を進む？</p>
             <div id="adventureOptions" class="adventure-options"></div>
-        </div>
-
-        <div id="upgradeArea" class="card">
-            <h3>強化</h3>
-            <div id="upgradeList"></div>
-        </div>
-
-        <div class="card">
-            <h3>ステータス</h3>
-            <div class="stats">
-                <div class="stat-box">攻撃力：<span id="atkText"></span></div>
-                <div class="stat-box">振れ幅：<span id="rangeText"></span></div>
-                <div class="stat-box">シールド：<span id="shieldText"></span></div>
-                <div class="stat-box">残留：<span id="remainText"></span>%</div>
-                <div class="stat-box">回復：<span id="healText"></span></div>
-                <div class="stat-box">解除率：<span id="cleanseText"></span>%</div>
-                <div class="stat-box">攻撃値：<span id="actAtkText"></span></div>
-                <div class="stat-box">防御値：<span id="actDefText"></span></div>
-                <div class="stat-box">回復値：<span id="actHealText"></span></div>
-                <div class="stat-box">失敗値：<span id="actFailText"></span></div>
-            </div>
         </div>
 
         <div id="battleArea" class="card hidden">
@@ -361,6 +381,98 @@ button.small {
         </div>
 
     </div>
+</div>
+<div id="upgradeModal" class="modalOverlay">
+
+    <div class="modalContent">
+
+        <div class="modalTitle">
+            強化
+        </div>
+
+        <div id="upgradeList"></div>
+
+        <button
+            class="closeBtn"
+            onclick="closeModal('upgradeModal')"
+        >
+            閉じる
+        </button>
+
+    </div>
+
+</div>
+<div id="statusModal" class="modalOverlay">
+
+    <div class="modalContent">
+
+        <div class="modalTitle">
+            ステータス
+        </div>
+
+        <div class="stats">
+
+            <div class="stat-box">
+                攻撃力：
+                <span id="atkText"></span>
+            </div>
+
+            <div class="stat-box">
+                振れ幅：
+                <span id="rangeText"></span>
+            </div>
+
+            <div class="stat-box">
+                シールド：
+                <span id="shieldText"></span>
+            </div>
+
+            <div class="stat-box">
+                残留：
+                <span id="remainText"></span>%
+            </div>
+
+            <div class="stat-box">
+                回復：
+                <span id="healText"></span>
+            </div>
+
+            <div class="stat-box">
+                解除率：
+                <span id="cleanseText"></span>%
+            </div>
+
+            <div class="stat-box">
+                攻撃値：
+                <span id="actAtkText"></span>
+            </div>
+
+            <div class="stat-box">
+                防御値：
+                <span id="actDefText"></span>
+            </div>
+
+            <div class="stat-box">
+                回復値：
+                <span id="actHealText"></span>
+            </div>
+
+            <div class="stat-box">
+                失敗値：
+                <span id="actFailText"></span>
+            </div>
+
+        </div>
+
+        <button
+            class="closeBtn"
+            onclick="closeModal('statusModal')"
+        >
+            閉じる
+        </button>
+
+    </div>
+
 </div>
 
 <script>
@@ -802,6 +914,23 @@ function gameOver(message) {
         alert("敗北……\n" + message);
         location.reload();
     }, 300);
+}
+
+function openUpgrade(){
+    document.getElementById(
+        "upgradeModal"
+    ).style.display = "flex";
+}
+
+function openStatus(){
+    document.getElementById(
+        "statusModal"
+    ).style.display = "flex";
+}
+
+function closeModal(id){
+    document.getElementById(id)
+        .style.display = "none";
 }
 </script>
 
