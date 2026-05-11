@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SUuNA - もうひとりのスゥナ -</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Yu Gothic", "Meiryo", sans-serif;
+    background:
+        radial-gradient(circle at top, rgba(255,255,255,0.18), transparent 35%),
+        linear-gradient(180deg, #142018, #050706);
+    color: #fff;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.noise-bg {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    background:
+        repeating-linear-gradient(
+            0deg,
+            rgba(255, 0, 0, 0.08) 0px,
+            rgba(255, 0, 0, 0.08) 2px,
+            transparent 2px,
+            transparent 6px
+        );
+    z-index: 1;
+}
+
+.noise-bg.active {
+    opacity: 1;
+    animation: noiseFlicker 0.2s infinite;
+}
+
+@keyframes noiseFlicker {
+    0% { transform: translate(0,0); opacity: 0.15; }
+    50% { transform: translate(2px,-2px); opacity: 0.35; }
+    100% { transform: translate(-1px,1px); opacity: 0.2; }
+}
+
+.game {
+    position: relative;
+    z-index: 2;
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 14px;
+}
+
+.title {
+    text-align: center;
+    margin-bottom: 12px;
+}
+
+.title h1 {
+    font-size: 28px;
+    margin: 8px 0 2px;
+    letter-spacing: 2px;
+}
+
+.title p {
+    margin: 0;
+    color: #d8f5dc;
+    font-size: 14px;
+}
+
+.card {
+    background: rgba(255,255,255,0.09);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 16px;
+    padding: 12px;
+    margin-bottom: 12px;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+}
+
+.status-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 14px;
+}
+
+.bar-wrap {
+    margin-top: 6px;
+    height: 12px;
+    background: rgba(0,0,0,0.4);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.bar {
+    height: 100%;
+    width: 100%;
+    transition: width 0.3s;
+}
+
+.hp {
+    background: linear-gradient(90deg, #77e38a, #e6ff8f);
+}
+
+.noisehp {
+    background: linear-gradient(90deg, #ff5656, #b600ff);
+}
+
+.resonance {
+    background: linear-gradient(90deg, #ffe66d, #ff3333);
+}
+
+.characters {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    min-height: 150px;
+}
+
+.char {
+    text-align: center;
+    width: 45%;
+}
+
+.face {
+    font-size: 58px;
+    line-height: 1;
+    margin-bottom: 8px;
+    filter: drop-shadow(0 0 8px rgba(255,255,255,0.25));
+}
+
+.noise-face {
+    animation: pulse 1.2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); filter: drop-shadow(0 0 8px rgba(255,0,0,0.4)); }
+    50% { transform: scale(1.07); filter: drop-shadow(0 0 18px rgba(255,0,0,0.9)); }
+    100% { transform: scale(1); filter: drop-shadow(0 0 8px rgba(255,0,0,0.4)); }
+}
+
+.vs {
+    font-size: 22px;
+    color: #ffdddd;
+    opacity: 0.8;
+}
+
+button {
+    border: none;
+    border-radius: 12px;
+    padding: 12px 10px;
+    font-size: 15px;
+    font-weight: bold;
+    color: #102014;
+    background: #d8ffd8;
+    cursor: pointer;
+    box-shadow: 0 4px 0 rgba(0,0,0,0.3);
+}
+
+button:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 rgba(0,0,0,0.3);
+}
+
+button.danger {
+    background: #ffb1b1;
+}
+
+button.dark {
+    background: #d2b5ff;
+}
+
+button.small {
+    font-size: 13px;
+    padding: 8px;
+}
+
+.button-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.adventure-options {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+}
+
+.log {
+    height: 170px;
+    overflow-y: auto;
+    background: rgba(0,0,0,0.35);
+    border-radius: 12px;
+    padding: 10px;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.log p {
+    margin: 0 0 6px;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    font-size: 13px;
+}
+
+.stat-box {
+    background: rgba(0,0,0,0.22);
+    padding: 8px;
+    border-radius: 10px;
+}
+
+.upgrade-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 6px;
+    align-items: center;
+    margin-bottom: 6px;
+    font-size: 13px;
+}
+
+.hidden {
+    display: none;
+}
+
+.result {
+    text-align: center;
+    font-size: 18px;
+    line-height: 1.7;
+}
+
+.warning {
+    color: #ff8b8b;
+    font-weight: bold;
+}
+
+.good {
+    color: #a8ffb5;
+    font-weight: bold;
+}
+
+.footer-note {
+    text-align: center;
+    opacity: 0.65;
+    font-size: 11px;
+    margin-top: 10px;
+}
+</style>
+</head>
+
+<body>
+<div id="noiseBg" class="noise-bg"></div>
+
+<div class="game">
+
+    <div class="title">
+        <h1>SUuNA</h1>
+        <p>- もうひとりのスゥナ -</p>
+    </div>
+
+    <div id="startScreen" class="card result">
+        <p>スゥナは、失われた力を取り戻すために森へ向かう。</p>
+        <p>しかし、力を取り戻すほど、NOISEとの共鳴は深まっていく。</p>
+        <button onclick="startGame()">ゲーム開始</button>
+    </div>
+
+    <div id="mainGame" class="hidden">
+
+        <div class="card">
+            <div class="status-row">
+                <span>スゥナ HP：<span id="suunaHpText"></span></span>
+                <span>pt：<span id="pointText"></span></span>
+            </div>
+            <div class="bar-wrap">
+                <div id="suunaHpBar" class="bar hp"></div>
+            </div>
+
+            <div class="status-row" style="margin-top:10px;">
+                <span>共鳴率：<span id="resonanceText"></span>%</span>
+                <span>冒険数：<span id="turnText"></span></span>
+            </div>
+            <div class="bar-wrap">
+                <div id="resonanceBar" class="bar resonance"></div>
+            </div>
+        </div>
+
+        <div class="card characters">
+            <div class="char">
+                <div class="face">🌿</div>
+                <div>スゥナ</div>
+            </div>
+            <div class="vs">VS</div>
+            <div class="char">
+                <div class="face noise-face">🟥</div>
+                <div>NOISE</div>
+            </div>
+        </div>
+
+        <div id="choiceArea" class="card">
+            <div class="button-grid">
+                <button onclick="showAdventureOptions()">冒険する</button>
+                <button class="danger" onclick="startNoiseBattle()">NOISEに挑む</button>
+            </div>
+        </div>
+
+        <div id="adventureArea" class="card hidden">
+            <p>どの道を進む？</p>
+            <div id="adventureOptions" class="adventure-options"></div>
+        </div>
+
+        <div id="upgradeArea" class="card">
+            <h3>強化</h3>
+            <div id="upgradeList"></div>
+        </div>
+
+        <div class="card">
+            <h3>ステータス</h3>
+            <div class="stats">
+                <div class="stat-box">攻撃力：<span id="atkText"></span></div>
+                <div class="stat-box">振れ幅：<span id="rangeText"></span></div>
+                <div class="stat-box">シールド：<span id="shieldText"></span></div>
+                <div class="stat-box">残留：<span id="remainText"></span>%</div>
+                <div class="stat-box">回復：<span id="healText"></span></div>
+                <div class="stat-box">解除率：<span id="cleanseText"></span>%</div>
+                <div class="stat-box">攻撃値：<span id="actAtkText"></span></div>
+                <div class="stat-box">防御値：<span id="actDefText"></span></div>
+                <div class="stat-box">回復値：<span id="actHealText"></span></div>
+                <div class="stat-box">失敗値：<span id="actFailText"></span></div>
+            </div>
+        </div>
+
+        <div id="battleArea" class="card hidden">
+            <h3>NOISE戦</h3>
+            <div class="status-row">
+                <span>NOISE HP：<span id="noiseHpText"></span></span>
+                <span>Turn：<span id="battleTurnText"></span></span>
+            </div>
+            <div class="bar-wrap">
+                <div id="noiseHpBar" class="bar noisehp"></div>
+            </div>
+            <button id="battleButton" class="dark" style="width:100%; margin-top:10px;" onclick="battleTurn()">次のターン</button>
+        </div>
+
+        <div class="card">
+            <h3>ログ</h3>
+            <div id="log" class="log"></div>
+        </div>
+
+        <div class="footer-note">
+            MVP Prototype Ver.0.1
+        </div>
+
+    </div>
+</div>
+
+<script>
+let game;
+
+function startGame() {
+    game = {
+        maxHp: 200,
+        hp: 200,
+        point: 0,
+        resonance: 0,
+        adventureCount: 0,
+
+        atk: 10,
+        range: 10,
+        shieldValue: 10,
+        remain: 10,
+        heal: 10,
+        cleanse: 10,
+
+        actionAtk: 10,
+        actionDef: 10,
+        actionHeal: 10,
+        actionFail: 10,
+
+        shield: 0,
+
+        noiseMaxHp: 200,
+        noiseHp: 200,
+        noiseShield: 0,
+        battleTurn: 0,
+        inBattle: false
+    };
+
+    document.getElementById("startScreen").classList.add("hidden");
+    document.getElementById("mainGame").classList.remove("hidden");
+
+    log("スゥナは森へ足を踏み入れた。");
+    updateView();
+}
+
+function rand(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function log(text) {
+    const logArea = document.getElementById("log");
+    const p = document.createElement("p");
+    p.innerHTML = text;
+    logArea.prepend(p);
+}
+
+function updateView() {
+    document.getElementById("suunaHpText").innerText = `${game.hp}/${game.maxHp}`;
+    document.getElementById("pointText").innerText = game.point;
+    document.getElementById("resonanceText").innerText = Math.floor(game.resonance);
+    document.getElementById("turnText").innerText = game.adventureCount;
+
+    document.getElementById("suunaHpBar").style.width = `${Math.max(0, game.hp / game.maxHp * 100)}%`;
+    document.getElementById("resonanceBar").style.width = `${Math.min(100, game.resonance)}%`;
+
+    document.getElementById("atkText").innerText = game.atk;
+    document.getElementById("rangeText").innerText = game.range;
+    document.getElementById("shieldText").innerText = game.shieldValue;
+    document.getElementById("remainText").innerText = game.remain;
+    document.getElementById("healText").innerText = game.heal;
+    document.getElementById("cleanseText").innerText = game.cleanse;
+
+    document.getElementById("actAtkText").innerText = game.actionAtk;
+    document.getElementById("actDefText").innerText = game.actionDef;
+    document.getElementById("actHealText").innerText = game.actionHeal;
+    document.getElementById("actFailText").innerText = game.actionFail;
+
+    if (game.inBattle) {
+        document.getElementById("noiseHpText").innerText = `${game.noiseHp}/${game.noiseMaxHp}`;
+        document.getElementById("battleTurnText").innerText = game.battleTurn;
+        document.getElementById("noiseHpBar").style.width = `${Math.max(0, game.noiseHp / game.noiseMaxHp * 100)}%`;
+    }
+
+    document.getElementById("noiseBg").classList.toggle("active", game.resonance >= 60);
+
+    renderUpgrades();
+}
+
+function showAdventureOptions() {
+    if (game.inBattle) return;
+
+    const types = ["残滓戦", "ランダムイベント", "回復"];
+    const shuffled = types.sort(() => Math.random() - 0.5);
+    const selected = shuffled.slice(0, 2);
+
+    const area = document.getElementById("adventureOptions");
+    area.innerHTML = "";
+
+    selected.forEach(type => {
+        const btn = document.createElement("button");
+        btn.innerText = type;
+        btn.onclick = () => doAdventure(type);
+        area.appendChild(btn);
+    });
+
+    document.getElementById("adventureArea").classList.remove("hidden");
+}
+
+function doAdventure(type) {
+    document.getElementById("adventureArea").classList.add("hidden");
+    game.adventureCount++;
+
+    if (type === "残滓戦") {
+        const damage = rand(15, 35);
+        const reward = rand(20, 30);
+        game.hp -= damage;
+        game.point += reward;
+        game.resonance += rand(8, 12);
+
+        log(`<span class="warning">残滓戦。</span> スゥナは${damage}ダメージを受け、${reward}ptを得た。`);
+    }
+
+    if (type === "ランダムイベント") {
+        randomEvent();
+    }
+
+    if (type === "回復") {
+        const healAmount = rand(25, 45);
+        const reward = rand(5, 15);
+        game.hp = Math.min(game.maxHp, game.hp + healAmount);
+        game.point += reward;
+        game.resonance += rand(3, 7);
+
+        log(`<span class="good">休息。</span> HPが${healAmount}回復し、${reward}ptを得た。`);
+    }
+
+    if (game.resonance >= 100) {
+        game.resonance = 100;
+        log(`<span class="warning">共鳴率が100%に到達。NOISEに捕捉された。</span>`);
+        startNoiseBattle();
+    }
+
+    if (game.hp <= 0) {
+        gameOver("スゥナは冒険の途中で力尽きた……");
+        return;
+    }
+
+    updateView();
+}
+
+function randomEvent() {
+    const roll = rand(1, 100);
+
+    if (roll <= 25) {
+        const reward = rand(5, 15);
+        game.point += reward;
+        log(`小さな記憶を見つけた。${reward}ptを得た。`);
+    } else if (roll <= 40) {
+        const reward = rand(20, 30);
+        game.point += reward;
+        log(`<span class="good">大きな記憶を見つけた。</span> ${reward}ptを得た。`);
+    } else if (roll <= 55) {
+        const damage = rand(10, 30);
+        game.hp -= damage;
+        log(`<span class="warning">不穏な気配。</span> ${damage}ダメージを受けた。`);
+    } else if (roll <= 70) {
+        game.actionFail += 2;
+        log(`<span class="warning">NOISEの影が近づく。</span> 失敗値が2増加した。`);
+    } else if (roll <= 85) {
+        game.atk += 3;
+        log(`<span class="good">怒りの記憶。</span> 攻撃力が3上がった。`);
+    } else {
+        log(`何も起きなかった。森は静かだ。`);
+    }
+
+    game.resonance += rand(3, 7);
+}
+
+function renderUpgrades() {
+    const list = document.getElementById("upgradeList");
+    list.innerHTML = "";
+
+    addUpgrade(list, "攻撃力", "atk", costAtk());
+    addUpgrade(list, "振れ幅", "range", costRange());
+    addUpgrade(list, "シールド", "shieldValue", costShield());
+    addUpgrade(list, "残留", "remain", costRemain());
+    addUpgrade(list, "回復", "heal", costHeal());
+    addUpgrade(list, "解除率", "cleanse", costCleanse());
+
+    addActionUpgrade(list, "攻撃値", "actionAtk");
+    addActionUpgrade(list, "防御値", "actionDef");
+    addActionUpgrade(list, "回復値", "actionHeal");
+}
+
+function addUpgrade(parent, label, key, cost) {
+    const row = document.createElement("div");
+    row.className = "upgrade-row";
+
+    row.innerHTML = `
+        <span>${label}：${game[key]} / 必要pt ${cost}</span>
+        <button class="small">＋</button>
+        <span></span>
+    `;
+
+    row.querySelector("button").onclick = () => {
+        if (game.point < cost) {
+            log("ptが足りない。");
+            return;
+        }
+        game.point -= cost;
+        game[key] += 1;
+        log(`${label}を強化した。`);
+        updateView();
+    };
+
+    parent.appendChild(row);
+}
+
+function addActionUpgrade(parent, label, key) {
+    const row = document.createElement("div");
+    row.className = "upgrade-row";
+
+    row.innerHTML = `
+        <span>${label}：${game[key]} / 1pt</span>
+        <button class="small">＋</button>
+        <button class="small">－</button>
+    `;
+
+    const buttons = row.querySelectorAll("button");
+
+    buttons[0].onclick = () => {
+        if (game.point < 1) {
+            log("ptが足りない。");
+            return;
+        }
+        game.point -= 1;
+        game[key] += 1;
+        log(`${label}を上げた。`);
+        updateView();
+    };
+
+    buttons[1].onclick = () => {
+        if (game.point < 1 || game[key] <= 1) {
+            log("これ以上下げられない。");
+            return;
+        }
+        game.point -= 1;
+        game[key] -= 1;
+        log(`${label}を下げた。`);
+        updateView();
+    };
+
+    parent.appendChild(row);
+}
+
+function costAtk() {
+    return 3 + Math.floor(game.atk * 0.15);
+}
+
+function costRange() {
+    return 1 + Math.floor(game.range * 0.05);
+}
+
+function costShield() {
+    return 2 + Math.floor(game.shieldValue * 0.10);
+}
+
+function costRemain() {
+    return 4 + Math.floor(game.remain * 0.20);
+}
+
+function costHeal() {
+    return 2 + Math.floor(game.heal * 0.10);
+}
+
+function costCleanse() {
+    return 3 + Math.floor(game.cleanse * 0.15);
+}
+
+function startNoiseBattle() {
+    if (game.inBattle) return;
+
+    game.inBattle = true;
+    game.battleTurn = 0;
+    game.noiseMaxHp = Math.floor(200 * (1 + game.resonance / 100));
+    game.noiseHp = game.noiseMaxHp;
+    game.noiseShield = 0;
+    game.shield = 0;
+
+    document.getElementById("choiceArea").classList.add("hidden");
+    document.getElementById("adventureArea").classList.add("hidden");
+    document.getElementById("battleArea").classList.remove("hidden");
+
+    log(`<span class="warning">NOISEが現れた。</span> 最終戦闘開始。`);
+    updateView();
+}
+
+function weightedAction(actor) {
+    let table;
+
+    if (actor === "suuna") {
+        table = [
+            { name: "攻撃", weight: game.actionAtk },
+            { name: "防御", weight: game.actionDef },
+            { name: "回復", weight: game.actionHeal },
+            { name: "失敗", weight: game.actionFail }
+        ];
+    } else {
+        table = [
+            { name: "攻撃", weight: game.actionAtk },
+            { name: "防御", weight: game.actionDef },
+            { name: "回復", weight: game.actionHeal },
+            { name: "失敗", weight: game.actionFail }
+        ];
+    }
+
+    const total = table.reduce((sum, item) => sum + item.weight, 0);
+    let roll = rand(1, total);
+
+    for (const item of table) {
+        roll -= item.weight;
+        if (roll <= 0) return item.name;
+    }
+
+    return "失敗";
+}
+
+function battleTurn() {
+    if (!game.inBattle) return;
+
+    game.battleTurn++;
+    game.noiseShield = 0;
+
+    const suunaAction = weightedAction("suuna");
+    const noiseAction = weightedAction("noise");
+
+    log(`--- Turn ${game.battleTurn} ---`);
+
+    resolveSuunaAction(suunaAction);
+
+    if (game.noiseHp <= 0) {
+        gameClear();
+        return;
+    }
+
+    resolveNoiseAction(noiseAction);
+
+    game.shield = Math.floor(game.shield * (game.remain / 100));
+
+    if (game.hp <= 0) {
+        gameOver("スゥナはNOISEに敗北した……");
+        return;
+    }
+
+    updateView();
+}
+
+function resolveSuunaAction(action) {
+    if (action === "攻撃") {
+        let damage = game.atk + rand(0, game.range);
+        damage = Math.max(0, damage - game.noiseShield);
+        game.noiseHp -= damage;
+        log(`スゥナの攻撃。NOISEに${damage}ダメージ。`);
+    }
+
+    if (action === "防御") {
+        game.shield += game.shieldValue;
+        log(`スゥナは身を守った。シールド${game.shieldValue}獲得。`);
+    }
+
+    if (action === "回復") {
+        game.hp = Math.min(game.maxHp, game.hp + game.heal);
+        log(`スゥナは呼吸を整えた。HP${game.heal}回復。`);
+    }
+
+    if (action === "失敗") {
+        if (game.actionFail >= 25 && rand(1, 100) <= 20) {
+            const damage = game.atk + game.range + rand(20, 40);
+            game.noiseHp -= damage;
+            log(`<span class="warning">臨界発動。</span> 暴発した力がNOISEに${damage}ダメージ。`);
+        } else {
+            log(`スゥナはうまく動けなかった。`);
+        }
+    }
+}
+
+function resolveNoiseAction(action) {
+    const bonusRate = rand(0, Math.floor(game.resonance));
+    const bonus = 1 + bonusRate / 100;
+
+    const noiseAtk = Math.floor(20 * bonus);
+    const noiseShieldValue = Math.floor(15 * bonus);
+    const noiseHeal = Math.floor(12 * bonus);
+
+    if (action === "攻撃") {
+        let damage = noiseAtk;
+
+        if (game.shield > 0) {
+            const blocked = Math.min(game.shield, damage);
+            game.shield -= blocked;
+            damage -= blocked;
+        }
+
+        game.hp -= damage;
+
+        log(`NOISEの攻撃。スゥナは${damage}ダメージを受けた。`);
+
+        const abnormalRate = 10 + game.resonance / 10;
+        if (rand(1, 100) <= abnormalRate) {
+            const bad = ["浸食", "混乱", "弱化"][rand(0, 2)];
+            log(`<span class="warning">${bad}の気配がスゥナを包む。</span> ※MVPでは演出のみ`);
+        }
+    }
+
+    if (action === "防御") {
+        game.noiseShield += noiseShieldValue;
+        log(`NOISEは歪んだ防壁を作った。`);
+    }
+
+    if (action === "回復") {
+        game.noiseHp = Math.min(game.noiseMaxHp, game.noiseHp + noiseHeal);
+        log(`NOISEが再生した。HP${noiseHeal}回復。`);
+    }
+
+    if (action === "失敗") {
+        log(`NOISEの形が一瞬崩れた。`);
+    }
+}
+
+function gameClear() {
+    log(`<span class="good">NOISEを討伐した。</span>`);
+    document.getElementById("battleButton").disabled = true;
+
+    setTimeout(() => {
+        alert("勝利！\nスゥナは失われた力を取り戻した。");
+        location.reload();
+    }, 300);
+}
+
+function gameOver(message) {
+    log(`<span class="warning">${message}</span>`);
+    setTimeout(() => {
+        alert("敗北……\n" + message);
+        location.reload();
+    }, 300);
+}
+</script>
+
+</body>
+</html>
