@@ -294,6 +294,119 @@ button.small {
     width:100%;
     margin-top:14px;
 }
+
+.startScreen{
+    position:fixed;
+    inset:0;
+    overflow:hidden;
+    background:black;
+    z-index:1000;
+}
+
+.bgVideo{
+    position:absolute;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+
+    opacity:0.8;
+}
+
+.startOverlay{
+    position:absolute;
+    inset:0;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(0,0,0,0.2),
+            rgba(0,0,0,0.55)
+        );
+}
+
+.startContent{
+    position:relative;
+    z-index:2;
+
+    width:100%;
+    height:100%;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+
+    padding:24px;
+}
+
+.titleLogo{
+    width:min(85vw,420px);
+
+    animation:
+        logoFloat 4s ease-in-out infinite;
+
+    filter:
+        drop-shadow(0 0 18px rgba(255,255,255,0.18));
+}
+
+@keyframes logoFloat{
+
+    0%{
+        transform:translateY(0px);
+    }
+
+    50%{
+        transform:translateY(-8px);
+    }
+
+    100%{
+        transform:translateY(0px);
+    }
+
+}
+
+.startButton{
+
+    margin-top:40px;
+
+    width:220px;
+
+    font-size:22px;
+    letter-spacing:4px;
+
+    padding:16px;
+
+    border-radius:18px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #d8ffd8,
+            #9ee0b0
+        );
+
+    box-shadow:
+        0 0 20px rgba(180,255,200,0.25);
+
+    animation:
+        startPulse 2s infinite;
+}
+
+@keyframes startPulse{
+
+    0%{
+        transform:scale(1);
+    }
+
+    50%{
+        transform:scale(1.03);
+    }
+
+    100%{
+        transform:scale(1);
+    }
+
+}
 </style>
 </head>
 
@@ -307,10 +420,36 @@ button.small {
         <p>- もうひとりのスゥナ -</p>
     </div>
 
-    <div id="startScreen" class="card result">
-        <p>スゥナは、失われた力を取り戻すために森へ向かう。</p>
-        <p>しかし、力を取り戻すほど、NOISEとの共鳴は深まっていく。</p>
-        <button onclick="startGame()">ゲーム開始</button>
+    <div id="startScreen" class="startScreen">
+
+        <video
+            class="bgVideo"
+            autoplay
+            muted
+                loop
+        playsinline
+        >
+            <source src="bg.mp4" type="video/mp4">
+        </video>
+
+        <div class="startOverlay"></div>
+
+        <div class="startContent">
+    
+            <img
+                src="title_logo.png"
+                class="titleLogo"
+            >
+
+            <button
+                class="startButton"
+                onclick="startGame()"
+            >
+                START
+            </button>
+
+        </div>
+
     </div>
 
     <div id="mainGame" class="hidden">
