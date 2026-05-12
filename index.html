@@ -407,6 +407,111 @@ button.small {
     }
 
 }
+.topButtons{
+    margin-top:40px;
+
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+
+    width:220px;
+}
+
+.storyScreen{
+    position:fixed;
+    inset:0;
+
+    background:black;
+
+    z-index:2000;
+
+    overflow:hidden;
+}
+
+.storyImage{
+    position:absolute;
+
+    width:100%;
+    height:100%;
+
+    object-fit:cover;
+
+    animation:
+        storyFade 0.5s;
+}
+
+@keyframes storyFade{
+
+    from{
+        opacity:0;
+        transform:scale(1.03);
+    }
+
+    to{
+        opacity:1;
+        transform:scale(1);
+    }
+
+}
+
+.storyOverlay{
+    position:absolute;
+    inset:0;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(0,0,0,0.2),
+            rgba(0,0,0,0.7)
+        );
+}
+
+.storyContent{
+    position:relative;
+    z-index:2;
+
+    width:100%;
+    height:100%;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-end;
+    align-items:center;
+
+    padding:40px 24px;
+}
+
+.storyText{
+    font-size:20px;
+    line-height:1.8;
+
+    text-align:center;
+
+    margin-bottom:40px;
+
+    text-shadow:
+        0 0 10px rgba(0,0,0,0.8);
+}
+
+.storyTextAnimate{
+    animation:
+        storyTextFade 0.8s;
+}
+
+@keyframes storyTextFade{
+
+    from{
+        opacity:0;
+        transform:translateY(10px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0px);
+    }
+
+}
+
 </style>
 </head>
 
@@ -414,11 +519,6 @@ button.small {
 <div id="noiseBg" class="noise-bg"></div>
 
 <div class="game">
-
-    <div class="title">
-        <h1>SUuNA</h1>
-        <p>- もうひとりのスゥナ -</p>
-    </div>
 
     <div id="startScreen" class="startScreen">
 
@@ -441,12 +541,23 @@ button.small {
                 class="titleLogo"
             >
 
-            <button
-                class="startButton"
-                onclick="startGame()"
-            >
-                START
-            </button>
+            <div class="topButtons">
+
+                <button
+                    class="startButton"
+                    onclick="openStory()"
+                >
+                    STORY
+                </button>
+
+                <button
+                    class="startButton"
+                    onclick="startGame()"
+                >
+                    START
+                </button>
+
+            </div>
 
         </div>
 
@@ -614,10 +725,140 @@ button.small {
 
 </div>
 
+<div
+    id="storyScreen"
+    class="storyScreen hidden"
+>
+
+    <img
+        id="storyImage"
+        class="storyImage"
+        src=""
+    >
+
+    <div class="storyOverlay"></div>
+
+    <div class="storyContent">
+
+        <div
+            id="storyText"
+            class="storyText"
+        ></div>
+
+		<button
+		    id="nextStoryButton"
+		    class="startButton"
+		    onclick="nextStory()"
+		>
+		    NEXT
+		</button>
+
+        <button
+            id="storyStartButton"
+            class="startButton hidden"
+            onclick="startFromStory()"
+        >
+            START
+        </button>
+
+    </div>
+
+</div>
+
 <script>
 let game;
 
+let storyIndex = 0;
+
+const storyPages = [
+
+    {
+        image:"story1.png",
+        text:`
+人々の願いが集まる場所。
+そこでは今日も、たくさんの想いがカードに込められていた。
+
+「勝ちたい」
+「負けたくない」
+「あと一枚、引ければ――」
+
+スゥナは、そんな想いを受け止め続けていた。
+けれど、願いの中には少しずつ、
+
+怒り、憎しみ、焦り――
+“負の感情”も混ざり始めていた。
+`
+    },
+
+    {
+        image:"story2.png",
+        text:`
+そして、ある日。
+積み重なった負の感情は限界を超える。
+
+スゥナの中から溢れ出した“それ”は、
+黒いノイズとなって姿を変えた。
+
+――NOISE。
+
+それは、スゥナから生まれた
+“もうひとりのスゥナ”だった。
+`
+    },
+
+    {
+        image:"story3.png",
+        text:`
+NOISEはスゥナの力を奪い、
+世界へと侵食を広げていく。
+
+勝つためなら何をしてもいい。
+不正、イカサマ、破壊――
+
+人々の負の感情はさらに膨れ上がり、
+NOISEはより強くなっていった。
+
+このままでは、世界は
+“ノイズ”に飲み込まれてしまう。
+`
+    },
+
+    {
+        image:"story4.png",
+        text:`
+NOISEを止めるために――
+
+スゥナは旅に出る。
+
+自分から生まれた“もうひとり”を、
+救うために。
+
+けれど、スゥナひとりでは戦えない。
+
+だから――
+
+あなたの力を、貸してほしい。
+
+これは、
+スゥナと“NOISE”の物語。
+
+そして、
+あなたが導く旅の記録。
+`
+    }
+
+];
+
 function startGame() {
+
+	document
+	    .getElementById("startScreen")
+	    .classList.add("hidden");
+
+	document
+	    .getElementById("storyScreen")
+	    .classList.add("hidden");
+    
     game = {
         maxHp: 200,
         hp: 200,
@@ -1071,6 +1312,98 @@ function closeModal(id){
     document.getElementById(id)
         .style.display = "none";
 }
+
+function openStory(){
+
+    storyIndex = 0;
+
+    document
+        .getElementById("startScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("storyScreen")
+        .classList.remove("hidden");
+
+    showStoryPage();
+
+}
+
+function showStoryPage(){
+
+    const page =
+        storyPages[storyIndex];
+
+    document
+        .getElementById("storyImage")
+        .src = page.image;
+
+	const storyText =
+	    document.getElementById(
+	        "storyText"
+	    );
+
+	storyText.classList.remove(
+	    "storyTextAnimate"
+	);
+
+	void storyText.offsetWidth;
+
+	storyText.innerText = page.text;
+
+	storyText.classList.add(
+	    "storyTextAnimate"
+	);
+
+	const isLastPage =
+	    storyIndex >=
+	    storyPages.length - 1;
+
+	document
+	    .getElementById(
+	        "storyStartButton"
+	    )
+	    .classList.toggle(
+	        "hidden",
+	        !isLastPage
+	    );
+
+	document
+	    .getElementById(
+	        "nextStoryButton"
+	    )
+	    .classList.toggle(
+	        "hidden",
+	        isLastPage
+	    );
+
+}
+
+function nextStory(){
+
+    if(
+        storyIndex >=
+        storyPages.length - 1
+    ){
+        return;
+    }
+
+    storyIndex++;
+
+    showStoryPage();
+
+}
+
+function startFromStory(){
+
+    document
+        .getElementById("storyScreen")
+        .classList.add("hidden");
+
+    startGame();
+
+}
+
 </script>
 
 </body>
