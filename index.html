@@ -755,13 +755,43 @@ button.small {
 
 	        <div id="battleArea" class="card hidden">
 	            <h3>NOISE戦</h3>
-	            <div class="status-row">
-	                <span>NOISE HP：<span id="noiseHpText"></span></span>
-	                <span>Turn：<span id="battleTurnText"></span></span>
-	            </div>
-	            <div class="bar-wrap">
-	                <div id="noiseHpBar" class="bar noisehp"></div>
-	            </div>
+				<div class="status-row">
+
+				    <span>
+				        スゥナ HP：
+				        <span id="battleSuunaHpText"></span>
+				    </span>
+
+				    <span>
+				        NOISE HP：
+				        <span id="noiseHpText"></span>
+				    </span>
+
+				</div>
+
+				<div class="bar-wrap">
+				    <div
+				        id="battleSuunaHpBar"
+				        class="bar hp"
+				    ></div>
+				</div>
+
+				<div class="bar-wrap" style="margin-top:8px;">
+				    <div
+				        id="noiseHpBar"
+				        class="bar noisehp"
+				    ></div>
+				</div>
+
+				<div
+				    class="status-row"
+				    style="margin-top:10px;"
+				>
+				    <span>
+				        Turn：
+				        <span id="battleTurnText"></span>
+				    </span>
+				</div>
 	            <button id="battleButton" class="dark" style="width:100%; margin-top:10px;" onclick="battleTurn()">次のターン</button>
 	        </div>
 		    <div class="card">
@@ -1102,6 +1132,22 @@ function updateView() {
         document.getElementById("noiseHpText").innerText = `${game.noiseHp}/${game.noiseMaxHp}`;
         document.getElementById("battleTurnText").innerText = game.battleTurn;
         document.getElementById("noiseHpBar").style.width = `${Math.max(0, game.noiseHp / game.noiseMaxHp * 100)}%`;
+        document
+		    .getElementById(
+		        "battleSuunaHpText"
+		    )
+		    .innerText =
+		    `${game.hp}/${game.maxHp}`;
+
+		document
+		    .getElementById(
+		        "battleSuunaHpBar"
+		    )
+		    .style.width =
+		    `${Math.max(
+		        0,
+		        game.hp / game.maxHp * 100
+		    )}%`;
     }
 
     document.getElementById("noiseBg").classList.toggle("active", game.resonance >= 60);
