@@ -13,9 +13,6 @@
 body {
     margin: 0;
     font-family: "Yu Gothic", "Meiryo", sans-serif;
-    background:
-        radial-gradient(circle at top, rgba(255,255,255,0.18), transparent 35%),
-        linear-gradient(180deg, #142018, #050706);
     color: #fff;
     min-height: 100vh;
     overflow-x: hidden;
@@ -610,6 +607,44 @@ button.small {
 
 }
 
+#fieldScreen{
+
+    min-height:100vh;
+
+    background-image:
+        linear-gradient(
+            rgba(0,0,0,0.25),
+            rgba(0,0,0,0.45)
+        ),
+        url("field_bg.png");
+
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
+
+    padding:14px;
+
+}
+
+#noiseBattleScreen{
+
+    min-height:100vh;
+
+    padding:14px;
+
+    background-image:
+        linear-gradient(
+            rgba(0,0,0,0.45),
+            rgba(0,0,0,0.82)
+        ),
+        url("noise_bg.png");
+
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
+
+}
+
 </style>
 </head>
 
@@ -662,71 +697,84 @@ button.small {
     </div>
 
     <div id="mainGame" class="hidden">
+    	<div id="fieldScreen">
+	        <div class="card">
+	            <div class="status-row">
+	                <span>スゥナ HP：<span id="suunaHpText"></span></span>
+	                <span>pt：<span id="pointText"></span></span>
+	            </div>
+	            <div class="bar-wrap">
+	                <div id="suunaHpBar" class="bar hp"></div>
+	            </div>
 
-        <div class="card">
-            <div class="status-row">
-                <span>スゥナ HP：<span id="suunaHpText"></span></span>
-                <span>pt：<span id="pointText"></span></span>
-            </div>
-            <div class="bar-wrap">
-                <div id="suunaHpBar" class="bar hp"></div>
-            </div>
+	            <div class="status-row" style="margin-top:10px;">
+	                <span>共鳴率：<span id="resonanceText"></span>%</span>
+	                <span>冒険数：<span id="turnText"></span></span>
+	            </div>
+	            <div class="bar-wrap">
+	                <div id="resonanceBar" class="bar resonance"></div>
+	            </div>
+	        </div>
 
-            <div class="status-row" style="margin-top:10px;">
-                <span>共鳴率：<span id="resonanceText"></span>%</span>
-                <span>冒険数：<span id="turnText"></span></span>
-            </div>
-            <div class="bar-wrap">
-                <div id="resonanceBar" class="bar resonance"></div>
-            </div>
-        </div>
+	        <div class="card characters">
+	            <div class="char">
+	                <div class="face">🌿</div>
+	                <div>スゥナ</div>
+	            </div>
+	            <div class="vs">VS</div>
+	            <div class="char">
+	                <div class="face noise-face">🟥</div>
+	                <div>NOISE</div>
+	            </div>
+	        </div>
 
-        <div class="card characters">
-            <div class="char">
-                <div class="face">🌿</div>
-                <div>スゥナ</div>
-            </div>
-            <div class="vs">VS</div>
-            <div class="char">
-                <div class="face noise-face">🟥</div>
-                <div>NOISE</div>
-            </div>
-        </div>
+	        <div id="choiceArea" class="card">
+	            <div class="button-grid">
+	                <button onclick="showAdventureOptions()">冒険する</button>
+	                <button class="danger" onclick="startNoiseBattle()">NOISEに挑む</button>
+	                <button onclick="openUpgrade()">強化</button>
+	                <button onclick="openStatus()">ステータス</button>
+	            </div>
+	        </div>
 
-        <div id="choiceArea" class="card">
-            <div class="button-grid">
-                <button onclick="showAdventureOptions()">冒険する</button>
-                <button class="danger" onclick="startNoiseBattle()">NOISEに挑む</button>
-                <button onclick="openUpgrade()">強化</button>
-                <button onclick="openStatus()">ステータス</button>
-            </div>
-        </div>
+	        <div id="adventureArea" class="card hidden">
+	            <p>どの道を進む？</p>
+	            <div id="adventureOptions" class="adventure-options"></div>
+	        </div>
+		    <div class="card">
+		        <h3>ログ</h3>
+		        <div id="fieldLog" class="log"></div>
+		    </div>
 
-        <div id="adventureArea" class="card hidden">
-            <p>どの道を進む？</p>
-            <div id="adventureOptions" class="adventure-options"></div>
-        </div>
+		    <div class="footer-note">
+		        MVP Prototype Ver.0.1
+		    </div>
+	    </div>
 
-        <div id="battleArea" class="card hidden">
-            <h3>NOISE戦</h3>
-            <div class="status-row">
-                <span>NOISE HP：<span id="noiseHpText"></span></span>
-                <span>Turn：<span id="battleTurnText"></span></span>
-            </div>
-            <div class="bar-wrap">
-                <div id="noiseHpBar" class="bar noisehp"></div>
-            </div>
-            <button id="battleButton" class="dark" style="width:100%; margin-top:10px;" onclick="battleTurn()">次のターン</button>
-        </div>
+	    <div id="noiseBattleScreen" class="hidden">
 
-        <div class="card">
-            <h3>ログ</h3>
-            <div id="log" class="log"></div>
-        </div>
+	        <div id="battleArea" class="card hidden">
+	            <h3>NOISE戦</h3>
+	            <div class="status-row">
+	                <span>NOISE HP：<span id="noiseHpText"></span></span>
+	                <span>Turn：<span id="battleTurnText"></span></span>
+	            </div>
+	            <div class="bar-wrap">
+	                <div id="noiseHpBar" class="bar noisehp"></div>
+	            </div>
+	            <button id="battleButton" class="dark" style="width:100%; margin-top:10px;" onclick="battleTurn()">次のターン</button>
+	        </div>
+		    <div class="card">
+		        <h3>ログ</h3>
+		        <div id="battleLog" class="log"></div>
+		    </div>
 
-        <div class="footer-note">
-            MVP Prototype Ver.0.1
-        </div>
+		    <div class="footer-note">
+		        MVP Prototype Ver.0.1
+		    </div>
+	    </div>
+
+
 
     </div>
 </div>
@@ -958,6 +1006,10 @@ function startGame() {
 	    .classList.add("hidden");
     
     game = {
+    	deck: [],
+    	discard: [],
+    	noiseDeck: [],
+		noiseDiscard: [],
         maxHp: 200,
         hp: 200,
         point: 0,
@@ -989,6 +1041,9 @@ function startGame() {
     document.getElementById("mainGame").classList.remove("hidden");
 
     log("スゥナは森へ足を踏み入れた。");
+
+    buildDeck("suuna");
+	buildDeck("noise");
     updateView();
 }
 
@@ -997,10 +1052,29 @@ function rand(min, max) {
 }
 
 function log(text) {
-    const logArea = document.getElementById("log");
-    const p = document.createElement("p");
-    p.innerHTML = text;
-    logArea.prepend(p);
+	const fieldLog =
+	    document.getElementById(
+	        "fieldLog"
+	    );
+
+	const battleLog =
+	    document.getElementById(
+	        "battleLog"
+	    );
+
+	const p1 =
+	    document.createElement("p");
+
+	p1.innerHTML = text;
+
+	fieldLog.prepend(p1);
+
+	const p2 =
+	    document.createElement("p");
+
+	p2.innerHTML = text;
+
+	battleLog.prepend(p2);
 }
 
 function updateView() {
@@ -1184,6 +1258,8 @@ function addActionUpgrade(parent, label, key) {
         }
         game.point -= 1;
         game[key] += 1;
+        buildDeck("suuna");
+		buildDeck("noise");
         log(`${label}を上げた。`);
         updateView();
     };
@@ -1195,6 +1271,8 @@ function addActionUpgrade(parent, label, key) {
         }
         game.point -= 1;
         game[key] -= 1;
+        buildDeck("suuna");
+		buildDeck("noise");
         log(`${label}を下げた。`);
         updateView();
     };
@@ -1236,42 +1314,32 @@ function startNoiseBattle() {
     game.noiseShield = 0;
     game.shield = 0;
 
-    document.getElementById("choiceArea").classList.add("hidden");
-    document.getElementById("adventureArea").classList.add("hidden");
-    document.getElementById("battleArea").classList.remove("hidden");
+	document
+	    .getElementById(
+	        "fieldScreen"
+	    )
+	    .classList.add("hidden");
+
+	document
+	    .getElementById(
+	        "noiseBattleScreen"
+	    )
+	    .classList.remove("hidden");
+
+	document
+	    .getElementById(
+	        "battleArea"
+	    )
+	    .classList.remove("hidden");
 
     log(`<span class="warning">NOISEが現れた。</span> 最終戦闘開始。`);
     updateView();
 }
 
-function weightedAction(actor) {
-    let table;
+function weightedAction(actor){
 
-    if (actor === "suuna") {
-        table = [
-            { name: "攻撃", weight: game.actionAtk },
-            { name: "防御", weight: game.actionDef },
-            { name: "回復", weight: game.actionHeal },
-            { name: "失敗", weight: game.actionFail }
-        ];
-    } else {
-        table = [
-            { name: "攻撃", weight: game.actionAtk },
-            { name: "防御", weight: game.actionDef },
-            { name: "回復", weight: game.actionHeal },
-            { name: "失敗", weight: game.actionFail }
-        ];
-    }
+    return drawCard(actor);
 
-    const total = table.reduce((sum, item) => sum + item.weight, 0);
-    let roll = rand(1, total);
-
-    for (const item of table) {
-        roll -= item.weight;
-        if (roll <= 0) return item.name;
-    }
-
-    return "失敗";
 }
 
 function battleTurn() {
@@ -1499,6 +1567,118 @@ function startFromStory(){
         .classList.add("hidden");
 
     startGame();
+
+}
+
+function buildDeck(actor){
+
+    let deckTarget;
+    let discardTarget;
+
+    if(actor === "noise"){
+
+        deckTarget = "noiseDeck";
+        discardTarget = "noiseDiscard";
+
+    }else{
+
+        deckTarget = "deck";
+        discardTarget = "discard";
+
+    }
+
+    game[deckTarget] = [];
+    game[discardTarget] = [];
+
+    for(let i=0;i<game.actionAtk;i++){
+        game[deckTarget].push("攻撃");
+    }
+
+    for(let i=0;i<game.actionDef;i++){
+        game[deckTarget].push("防御");
+    }
+
+    for(let i=0;i<game.actionHeal;i++){
+        game[deckTarget].push("回復");
+    }
+
+    for(let i=0;i<game.actionFail;i++){
+        game[deckTarget].push("失敗");
+    }
+
+    shuffleDeck(deckTarget);
+
+}
+
+function shuffleDeck(deckName){
+
+    const deck = game[deckName];
+
+    for(
+        let i = deck.length - 1;
+        i > 0;
+        i--
+    ){
+
+        const j =
+            Math.floor(
+                Math.random() * (i + 1)
+            );
+
+        [
+            deck[i],
+            deck[j]
+        ] = [
+            deck[j],
+            deck[i]
+        ];
+
+    }
+
+}
+
+function drawCard(actor){
+
+    let deckName;
+    let discardName;
+
+    if(actor === "noise"){
+
+        deckName = "noiseDeck";
+        discardName = "noiseDiscard";
+
+    }else{
+
+        deckName = "deck";
+        discardName = "discard";
+
+    }
+
+    if(game[deckName].length <= 0){
+
+        game[deckName] = [
+            ...game[discardName]
+        ];
+
+        game[discardName] = [];
+
+        shuffleDeck(deckName);
+
+        log(
+            `<span class='warning'>
+            ${actor === "noise" ? "NOISE" : "スゥナ"}
+            のデッキ再構築。
+            </span>`
+        );
+
+    }
+
+    const card =
+        game[deckName].shift();
+
+    game[discardName].push(card);
+
+    return card;
 
 }
 
