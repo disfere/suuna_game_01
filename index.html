@@ -342,7 +342,7 @@ button.small {
 }
 
 .titleLogo{
-    width:min(95vw,560px);
+    width:min(100vw,700px);
 
     animation:
         logoFloat 4s ease-in-out infinite;
@@ -373,12 +373,12 @@ button.small {
 
     margin-top:40px;
 
-    width:220px;
+    width:180px;
 
-    font-size:20px;
-    letter-spacing:4px;
+    font-size:16px;
+    letter-spacing:2px;
 
-    padding:16px;
+    padding:12px;
 
     border-radius:14px;
 
@@ -792,7 +792,7 @@ button.small {
 				        <span id="battleTurnText"></span>
 				    </span>
 				</div>
-	            <button id="battleButton" class="dark" style="width:100%; margin-top:10px;" onclick="battleTurn()">次のターン</button>
+	            <button id="battleButton" class="dark" style="width:100%; margin-top:10px;" onclick="startAutoBattle()">戦闘開始</button>
 	        </div>
 		    <div class="card">
 		        <h3>ログ</h3>
@@ -1064,7 +1064,9 @@ function startGame() {
         noiseHp: 200,
         noiseShield: 0,
         battleTurn: 0,
-        inBattle: false
+        inBattle: false,
+
+        autoBattle:false
     };
 
     document.getElementById("startScreen").classList.add("hidden");
@@ -1385,6 +1387,50 @@ function startNoiseBattle() {
 function weightedAction(actor){
 
     return drawCard(actor);
+
+}
+
+function startAutoBattle(){
+
+    if(game.autoBattle){
+        return;
+    }
+
+    game.autoBattle = true;
+
+    document
+        .getElementById(
+            "battleButton"
+        )
+        .disabled = true;
+
+    autoBattleLoop();
+
+}
+
+function autoBattleLoop(){
+
+    if(
+        !game.inBattle ||
+        game.hp <= 0 ||
+        game.noiseHp <= 0
+    ){
+        return;
+    }
+
+    battleTurn();
+
+    if(
+        game.hp <= 0 ||
+        game.noiseHp <= 0
+    ){
+        return;
+    }
+
+    setTimeout(
+        autoBattleLoop,
+        1200
+    );
 
 }
 
