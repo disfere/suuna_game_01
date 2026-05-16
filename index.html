@@ -696,9 +696,19 @@ button.small {
 
 }
 
+.cutinContainer{
+
+    position:relative;
+
+    display:inline-block;
+
+}
+
 .cutinImage{
 
     width:min(92vw,520px);
+
+    display:block;
 
     border-radius:20px;
 
@@ -707,6 +717,60 @@ button.small {
 
     animation:
         cutinZoom 1s ease;
+
+}
+
+.cutinText{
+
+    position:absolute;
+
+    inset:0;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    z-index:10;
+
+    font-size:42px;
+
+    font-weight:bold;
+
+    color:white;
+
+    text-shadow:
+	    -2px -2px 0 #000,
+	     2px -2px 0 #000,
+	    -2px  2px 0 #000,
+	     2px  2px 0 #000,
+	     0 0 10px rgba(0,0,0,0.95),
+	     0 0 24px rgba(180,120,255,0.45);
+
+    pointer-events:none;
+
+}
+
+@keyframes cutinTextFade{
+
+    0%{
+        opacity:0;
+        transform:
+            translateX(-50%)
+            translateY(10px);
+    }
+
+    20%{
+        opacity:1;
+    }
+
+    100%{
+        opacity:1;
+        transform:
+            translateX(-50%)
+            translateY(0px);
+    }
 
 }
 
@@ -1007,16 +1071,16 @@ button.small {
 
 </div>
 
-<div
-    id="cutinModal"
-    class="modalOverlay"
->
+<div id="cutinModal" class="modalOverlay">
 
-    <img
-        id="cutinImage"
-        class="cutinImage"
-        src=""
-    >
+    <div class="cutinContainer">
+
+        <img id="cutinImage" class="cutinImage" src="">
+
+        <div id="cutinText" class="cutinText">
+        </div>
+
+    </div>
 
 </div>
 
@@ -1306,7 +1370,8 @@ function startGame() {
         battleTurn: 0,
         inBattle: false,
 
-        autoBattle:false
+        autoBattle:false,
+        pendingNoiseBattle:false
     };
 
     document.getElementById("startScreen").classList.add("hidden");
@@ -1482,6 +1547,7 @@ function doAdventure(type) {
 		`;
 		showCutin(
 		    "battle_cutin.png",
+		    "こっちにこないで",
 		    ()=>{
 		        showResult(resultText);
 		    }
@@ -1494,6 +1560,7 @@ function doAdventure(type) {
 		    randomEvent();
 		showCutin(
 		    "event_cutin.png",
+		    "何が入ってるかな？",
 		    ()=>{
 		        showResult(resultText);
 		    }
@@ -1522,6 +1589,7 @@ function doAdventure(type) {
 		`;
 		showCutin(
 		    "rest_cutin.png",
+		    "ちょっと休もうか",
 		    ()=>{
 		        showResult(resultText);
 		    }
@@ -1546,6 +1614,7 @@ function doAdventure(type) {
 
 		showCutin(
 		    "rare_event_cutin.png",
+		    "すごいの、見つけた！",
 		    ()=>{
 		        showResult(resultText);
 		    }
@@ -1555,19 +1624,10 @@ function doAdventure(type) {
 
 	}
 
-    if (game.resonance >= 100) {
-        game.resonance = 100;
-
-        const resultText = `
-		<span class="warning">
-		共鳴率が100%に到達。
-		</span><br><br>
-		NOISEに捕捉された。
-		`;
-
-		showResult(resultText);
-		log(resultText);
-    }
+	if (game.resonance >= 100) {
+	    game.resonance = 100;
+	    game.pendingNoiseBattle = true;
+	}
 
     if (game.hp <= 0) {
         gameOver("スゥナは冒険の途中で力尽きた……");
@@ -1995,11 +2055,32 @@ function closeResultModal(){
         )
         .style.display = "none";
 
-    if(
-        game.resonance >= 100 &&
-        !game.inBattle
-    ){
+    if(game.pendingNoiseBattle){
+
+        game.pendingNoiseBattle = false;
+
+        showResult(`
+        <span class="resonanceUp">
+        共鳴率が100%に到達。
+        </span><br><br>
+
+        <span class="warning">
+        NOISEに捕捉された。
+        </span>
+        `);
+
+        game.startNoiseAfterModal = true;
+
+        return;
+
+    }
+
+    if(game.startNoiseAfterModal){
+
+        game.startNoiseAfterModal = false;
+
         startNoiseBattle();
+
     }
 
 }
@@ -2347,6 +2428,7 @@ function openGiveUpModal(){
 
 function showCutin(
     image,
+    text,
     callback
 ){
 
@@ -2360,6 +2442,12 @@ function showCutin(
             "cutinImage"
         )
         .src = image;
+
+    document
+        .getElementById(
+            "cutinText"
+        )
+        .innerHTML = text;
 
     modal.style.display = "flex";
 
