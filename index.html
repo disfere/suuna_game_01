@@ -1209,6 +1209,22 @@ button.small {
 
 }
 
+.versionText{
+
+    margin-top:10px;
+
+    font-size:13px;
+
+    letter-spacing:2px;
+
+    color:
+        rgba(255,255,255,0.55);
+
+    text-shadow:
+        0 0 8px rgba(0,0,0,0.8);
+
+}
+
 </style>
 </head>
 
@@ -1237,6 +1253,9 @@ button.small {
                 src="title_logo.png"
                 class="titleLogo"
             >
+            <div
+			    class="versionText"
+			></div>
 
             <div class="topButtons">
 
@@ -1316,9 +1335,9 @@ button.small {
 			    <div id="fieldLog" class="log"></div>
 			</div>
 
-		    <div class="footer-note">
-		        MVP Prototype Ver.0.3
-		    </div>
+            <div
+			    class="versionText"
+			></div>
 	    </div>
 
 	    <div id="noiseBattleScreen" class="hidden">
@@ -1369,9 +1388,9 @@ button.small {
 		        <div id="battleLog" class="log"></div>
 		    </div>
 
-		    <div class="footer-note">
-		        MVP Prototype Ver.0.3
-		    </div>
+            <div
+			    class="versionText"
+			></div>
 	    </div>
 
 
@@ -1684,6 +1703,9 @@ button.small {
 </div>
 
 <script>
+// ===== CONFIG =====
+const GAME_VERSION = "Ver.0.3.1";
+
 // デバッグ用 true or false
 const DEBUG_FAST_BATTLE = true;
 const DEBUG_MODE = DEBUG_FAST_BATTLE;
@@ -2999,6 +3021,12 @@ function startNoiseBattleSequence(){
 }
 
 window.onload = () => {
+
+	document
+	    .querySelectorAll(".versionText")
+	    .forEach(el=>{
+	        el.innerText = GAME_VERSION;
+	    });
 
     if(loadGame()){
 
