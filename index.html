@@ -950,7 +950,14 @@ button.small {
 
     position:absolute;
 
-    font-size:64px;
+    left:50%;
+    top:50%;
+
+    transform:
+        translate(-50%,-50%);
+
+    font-size:
+        clamp(32px, 10vw, 64px);
 
     font-weight:bold;
 
@@ -958,14 +965,16 @@ button.small {
 
     letter-spacing:8px;
 
+    white-space:nowrap;
+
     text-shadow:
         0 0 12px rgba(255,255,255,0.15),
         0 0 30px rgba(180,0,255,0.95),
         0 0 80px rgba(180,0,255,0.55);
 
     animation:
-	    noiseWordFade 2s ease,
-	    noiseWordShake 0.08s 24;
+        noiseWordFade 2s ease,
+        noiseWordShake 0.08s 24;
 
 }
 
