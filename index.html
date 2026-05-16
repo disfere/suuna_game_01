@@ -1328,7 +1328,11 @@ button.small {
 	        <div id="choiceArea" class="card">
 	            <div class="button-grid">
 	                <button onclick="openPathSelect()">冒険する</button>
-	                <button class="danger" onclick="showNoiseCatch('いらっしゃい')">NOISEに挑む</button>
+	                <button class="danger" onclick="
+	                	showNoiseBattleMessage('challenge');
+	                	showNoiseCatch('いらっしゃい')
+	                ">
+	                	NOISEに挑む</button>
 	                <button onclick="openUpgrade()">強化</button>
 	                <button onclick="openStatus()">ステータス</button>
 	                <button onclick="openLog()">ログ</button>
@@ -1714,7 +1718,7 @@ button.small {
 
 <script>
 // ===== CONFIG =====
-const GAME_VERSION = "Ver.0.3.2";
+const GAME_VERSION = "Ver.0.3.3";
 
 // デバッグ用 true or false
 const DEBUG_FAST_BATTLE = true;
@@ -1726,6 +1730,8 @@ let leftPath = null;
 let rightPath = null;
 
 let storyIndex = 0;
+
+let resultMessage = "";
 
 const storyPages = [
 
@@ -2021,7 +2027,7 @@ function doAdventure(type) {
 
         const resultText = `
 		<span class="warning">
-		残滓戦。
+		NOISEの残滓と戦闘
 		</span><br><br>
 		スゥナは${damage}ダメージを受けた。<br>
 		${reward}ptを得た。<br>
@@ -2547,6 +2553,8 @@ function closeResultModal(){
 
         game.pendingNoiseBattle = false;
 
+        showNoiseBattleMessage("forced");
+
         showNoiseCatch();
 
         return;
@@ -2997,7 +3005,7 @@ function showNoiseCatch(message="みーつけた"){
         image.classList.remove("hidden");
 		image.style.animation ="noiseImageAppear 1.5s forwards";
         setTimeout(()=>{
-		    image.classList.add = "noiseIdle";
+		    image.classList.add("noiseIdle");
 		},1500);
 
     },2800);
@@ -3005,17 +3013,38 @@ function showNoiseCatch(message="みーつけた"){
     // リザルトモーダル
     setTimeout(()=>{
 		game.inNoiseSequence = true;
-        showResult(`
-        <span class="resonanceUp">
-        共鳴率が100%に到達。
-        </span>
-        <br><br>
-        <span class="warning">
-        NOISEに捕捉された。
-        </span>
-        `);
+        showResult(resultMessage);
     },5200);
+}
 
+function showNoiseBattleMessage(type){
+    if(type==="forced"){
+		resultMessage = `
+		<span class="resonanceUp">
+		共鳴率が100%に到達。
+		</span>
+		<br><br>
+		<span class="warning">
+		NOISEに捕捉された。
+		</span>
+		`;
+    }else if(type==="challenge"){
+		resultMessage = `
+		<span class="warning">
+		NOISE領域へ踏み込む。
+		</span>
+		<br><br>
+		黒い気配が漂っている……
+		`;
+    }else{
+		resultMessage = `
+		<span class="warning">
+		NOISE領域へ踏み込む。
+		</span>
+		<br><br>
+		黒い気配が漂っている……
+		`;
+	}
 }
 
 function startNoiseBattleSequence(){
