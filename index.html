@@ -981,23 +981,33 @@ button.small {
 @keyframes noiseWordShake{
 
     0%{
-        transform:translate(0px,0px);
+        transform:
+            translate(-50%,-50%)
+            translate(0px,0px);
     }
 
     25%{
-        transform:translate(-1px,1px);
+        transform:
+            translate(-50%,-50%)
+            translate(-1px,1px);
     }
 
     50%{
-        transform:translate(1px,-1px);
+        transform:
+            translate(-50%,-50%)
+            translate(1px,-1px);
     }
 
     75%{
-        transform:translate(-1px,-1px);
+        transform:
+            translate(-50%,-50%)
+            translate(-1px,-1px);
     }
 
     100%{
-        transform:translate(0px,0px);
+        transform:
+            translate(-50%,-50%)
+            translate(0px,0px);
     }
 
 }
@@ -1704,7 +1714,7 @@ button.small {
 
 <script>
 // ===== CONFIG =====
-const GAME_VERSION = "Ver.0.3.1";
+const GAME_VERSION = "Ver.0.3.2";
 
 // デバッグ用 true or false
 const DEBUG_FAST_BATTLE = true;
