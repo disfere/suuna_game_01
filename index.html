@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SUuNA - もうひとりのスゥナ -</title>
+<title>ALTER SUuNA</title>
 
 <style>
 * {
@@ -249,6 +249,18 @@ button.small {
 .good {
     color: #a8ffb5;
     font-weight: bold;
+}
+
+.resonanceUp{
+
+    color:#c88cff;
+
+    font-weight:bold;
+
+    text-shadow:
+        0 0 10px
+        rgba(180,120,255,0.45);
+
 }
 
 .footer-note {
@@ -646,6 +658,76 @@ button.small {
 
 }
 
+.pathArea{
+
+    display:flex;
+    gap:20px;
+    margin-top:20px;
+
+}
+
+.pathCard{
+
+    flex:1;
+
+}
+
+.pathButton{
+
+    width:100%;
+    margin-bottom:12px;
+
+}
+
+.pathInfo{
+
+    font-size:14px;
+    line-height:1.8;
+    opacity:0.9;
+
+}
+
+#cutinModal{
+
+    background:
+        rgba(0,0,0,0.88);
+
+    z-index:1500;
+
+}
+
+.cutinImage{
+
+    width:min(92vw,520px);
+
+    border-radius:20px;
+
+    box-shadow:
+        0 0 40px rgba(255,255,255,0.08);
+
+    animation:
+        cutinZoom 1s ease;
+
+}
+
+@keyframes cutinZoom{
+
+    0%{
+        opacity:0;
+        transform:scale(1.08);
+    }
+
+    20%{
+        opacity:1;
+    }
+
+    100%{
+        opacity:1;
+        transform:scale(1);
+    }
+
+}
+
 </style>
 </head>
 
@@ -731,10 +813,12 @@ button.small {
 
 	        <div id="choiceArea" class="card">
 	            <div class="button-grid">
-	                <button onclick="showAdventureOptions()">冒険する</button>
+	                <button onclick="openPathSelect()">冒険する</button>
 	                <button class="danger" onclick="startNoiseBattle()">NOISEに挑む</button>
 	                <button onclick="openUpgrade()">強化</button>
 	                <button onclick="openStatus()">ステータス</button>
+	                <button onclick="openLog()">ログ</button>
+	                <button class="danger" onclick="openGiveUpModal()">あきらめる</button>
 	            </div>
 	        </div>
 
@@ -742,10 +826,10 @@ button.small {
 	            <p>どの道を進む？</p>
 	            <div id="adventureOptions" class="adventure-options"></div>
 	        </div>
-		    <div class="card">
-		        <h3>ログ</h3>
-		        <div id="fieldLog" class="log"></div>
-		    </div>
+		    <div class="card hidden">
+			    <h3>ログ</h3>
+			    <div id="fieldLog" class="log"></div>
+			</div>
 
 		    <div class="footer-note">
 		        MVP Prototype Ver.0.1
@@ -801,7 +885,7 @@ button.small {
 		    </div>
 
 		    <div class="footer-note">
-		        MVP Prototype Ver.0.1
+		        MVP Prototype Ver.0.2
 		    </div>
 	    </div>
 
@@ -902,6 +986,158 @@ button.small {
 
 </div>
 
+<div id="logModal" class="modalOverlay">
+
+    <div class="modalContent">
+
+        <div class="modalTitle">
+            ログ
+        </div>
+
+        <div id="modalLog" class="log"></div>
+
+        <button
+            class="closeBtn"
+            onclick="closeModal('logModal')"
+        >
+            閉じる
+        </button>
+
+    </div>
+
+</div>
+
+<div
+    id="cutinModal"
+    class="modalOverlay"
+>
+
+    <img
+        id="cutinImage"
+        class="cutinImage"
+        src=""
+    >
+
+</div>
+
+<div id="resultModal" class="modalOverlay">
+
+    <div class="modalContent">
+
+        <div
+            id="resultText"
+            class="result"
+        ></div>
+
+        <button
+            class="closeBtn"
+            onclick="closeResultModal()"
+        >
+            OK
+        </button>
+
+    </div>
+
+</div>
+
+<div id="pathModal" class="modalOverlay">
+
+    <div class="modalContent">
+
+        <div class="modalTitle">
+            どっちに行く？
+        </div>
+
+        <div class="pathArea">
+
+            <div class="pathCard">
+
+                <button
+                    class="pathButton"
+                    onclick="selectPath(leftPath)"
+                >
+                    左の道
+                </button>
+
+                <div
+                    id="leftPathInfo"
+                    class="pathInfo"
+                ></div>
+
+            </div>
+
+            <div class="pathCard">
+
+                <button
+                    class="pathButton"
+                    onclick="selectPath(rightPath)"
+                >
+                    右の道
+                </button>
+
+                <div
+                    id="rightPathInfo"
+                    class="pathInfo"
+                ></div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div id="giveUpModal" class="modalOverlay">
+
+    <div class="modalContent">
+
+        <div class="modalTitle">
+            本当にあきらめますか？
+        </div>
+
+        <div
+            style="
+                text-align:center;
+                margin-top:20px;
+            "
+        >
+            スゥナの旅は終了します。
+        </div>
+
+        <div
+            style="
+                display:flex;
+                gap:12px;
+                margin-top:24px;
+            "
+        >
+
+            <button
+                class="danger"
+                style="flex:1;"
+                onclick="giveUpGame()"
+            >
+                はい
+            </button>
+
+            <button
+                style="flex:1;"
+                onclick="
+                    closeModal(
+                        'giveUpModal'
+                    )
+                "
+            >
+                いいえ
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
 <div
     id="storyScreen"
     class="storyScreen hidden"
@@ -944,6 +1180,9 @@ button.small {
 
 <script>
 let game;
+
+let leftPath = null;
+let rightPath = null;
 
 let storyIndex = 0;
 
@@ -1084,6 +1323,32 @@ function rand(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+function saveGame(){
+
+    localStorage.setItem(
+        "suunaSave",
+        JSON.stringify(game)
+    );
+
+}
+
+function loadGame(){
+
+    const save =
+        localStorage.getItem(
+            "suunaSave"
+        );
+
+    if(!save){
+        return false;
+    }
+
+    game = JSON.parse(save);
+
+    return true;
+
+}
+
 function log(text) {
 	const fieldLog =
 	    document.getElementById(
@@ -1108,6 +1373,18 @@ function log(text) {
 	p2.innerHTML = text;
 
 	battleLog.prepend(p2);
+
+	const modalLog =
+	    document.getElementById(
+	        "modalLog"
+	    );
+
+	const p3 =
+	    document.createElement("p");
+
+	p3.innerHTML = text;
+
+	modalLog.prepend(p3);
 }
 
 function updateView() {
@@ -1156,6 +1433,7 @@ function updateView() {
     document.getElementById("noiseBg").classList.toggle("active", game.resonance >= 60);
 
     renderUpgrades();
+    saveGame();
 }
 
 function showAdventureOptions() {
@@ -1185,31 +1463,110 @@ function doAdventure(type) {
     if (type === "残滓戦") {
         const damage = rand(15, 35);
         const reward = rand(20, 30);
+        const resonanceGain = rand(8,12);
+
         game.hp -= damage;
         game.point += reward;
-        game.resonance += rand(8, 12);
+        game.resonance += resonanceGain;
 
-        log(`<span class="warning">残滓戦。</span> スゥナは${damage}ダメージを受け、${reward}ptを得た。`);
+        const resultText = `
+		<span class="warning">
+		残滓戦。
+		</span><br><br>
+		スゥナは${damage}ダメージを受けた。<br>
+		${reward}ptを得た。<br>
+		<span class="resonanceUp">
+		共鳴率が
+		${resonanceGain}%上昇した。
+		</span>
+		`;
+		showCutin(
+		    "battle_cutin.png",
+		    ()=>{
+		        showResult(resultText);
+		    }
+		);
+		log(resultText);
     }
 
     if (type === "ランダムイベント") {
-        randomEvent();
+        const resultText =
+		    randomEvent();
+		showCutin(
+		    "event_cutin.png",
+		    ()=>{
+		        showResult(resultText);
+		    }
+		);
+		log(resultText);
     }
 
     if (type === "回復") {
         const healAmount = rand(25, 45);
         const reward = rand(5, 15);
+        const resonanceGain = rand(3,7);
         game.hp = Math.min(game.maxHp, game.hp + healAmount);
         game.point += reward;
-        game.resonance += rand(3, 7);
+        game.resonance += resonanceGain;
 
-        log(`<span class="good">休息。</span> HPが${healAmount}回復し、${reward}ptを得た。`);
+        const resultText = `
+		<span class="good">
+		休息。
+		</span><br><br>
+		HPが${healAmount}回復した。<br>
+		${reward}ptを得た。<br>
+		<span class="resonanceUp">
+		共鳴率が
+		${resonanceGain}%上昇した。
+		</span>
+		`;
+		showCutin(
+		    "rest_cutin.png",
+		    ()=>{
+		        showResult(resultText);
+		    }
+		);
+		log(resultText);
     }
+    
+    if(type === "レアイベント"){
+
+	    const reward = rand(50,100);
+
+	    game.point += reward;
+
+	    const resultText = `
+	    <span class="good">
+	    異質な光。
+	    </span><br><br>
+
+	    スゥナは特別な記憶を見つけた。<br>
+	    ${reward}ptを得た。
+	    `;
+
+		showCutin(
+		    "rare_event_cutin.png",
+		    ()=>{
+		        showResult(resultText);
+		    }
+		);
+
+	    log(resultText);
+
+	}
 
     if (game.resonance >= 100) {
         game.resonance = 100;
-        log(`<span class="warning">共鳴率が100%に到達。NOISEに捕捉された。</span>`);
-        startNoiseBattle();
+
+        const resultText = `
+		<span class="warning">
+		共鳴率が100%に到達。
+		</span><br><br>
+		NOISEに捕捉された。
+		`;
+
+		showResult(resultText);
+		log(resultText);
     }
 
     if (game.hp <= 0) {
@@ -1223,29 +1580,51 @@ function doAdventure(type) {
 function randomEvent() {
     const roll = rand(1, 100);
 
+    const resonanceGain = rand(3,7);
+    game.resonance += resonanceGain;
+
     if (roll <= 25) {
         const reward = rand(5, 15);
         game.point += reward;
-        log(`小さな記憶を見つけた。${reward}ptを得た。`);
+        return `小さな記憶を見つけた。<br><br>${reward}ptを得た。<br>
+		<span class="resonanceUp">
+		共鳴率が
+		${resonanceGain}%上昇した。
+		</span>`;
     } else if (roll <= 40) {
         const reward = rand(20, 30);
         game.point += reward;
-        log(`<span class="good">大きな記憶を見つけた。</span> ${reward}ptを得た。`);
+        return `<span class="good">大きな記憶を見つけた。</span><br><br>${reward}ptを得た。<br>
+		<span class="resonanceUp">
+		共鳴率が
+		${resonanceGain}%上昇した。
+		</span>`;
     } else if (roll <= 55) {
         const damage = rand(10, 30);
         game.hp -= damage;
-        log(`<span class="warning">不穏な気配。</span> ${damage}ダメージを受けた。`);
+        return `<span class="warning">不穏な気配。</span><br><br>${damage}ダメージを受けた。<br>
+		<span class="resonanceUp">
+		共鳴率が
+		${resonanceGain}%上昇した。
+		</span>`;
     } else if (roll <= 70) {
         game.actionFail += 2;
-        log(`<span class="warning">NOISEの影が近づく。</span> 失敗値が2増加した。`);
+        return `<span class="warning">NOISEの影が近づく。</span><br><br>失敗値が2増加した。<br>
+		<span class="resonanceUp">
+		共鳴率が
+		${resonanceGain}%上昇した。
+		</span>`;
     } else if (roll <= 85) {
         game.atk += 3;
-        log(`<span class="good">怒りの記憶。</span> 攻撃力が3上がった。`);
+        return `<span class="good">怒りの記憶。</span><br><br>攻撃力が3上がった。<br>
+		<span class="resonanceUp">
+		共鳴率が
+		${resonanceGain}%上昇した。
+		</span>`;
     } else {
-        log(`何も起きなかった。森は静かだ。`);
+        return `何も起きなかった。森は静かだ。`;
     }
 
-    game.resonance += rand(3, 7);
 }
 
 function renderUpgrades() {
@@ -1538,21 +1917,31 @@ function resolveNoiseAction(action) {
 }
 
 function gameClear() {
+
     log(`<span class="good">NOISEを討伐した。</span>`);
+
+    localStorage.removeItem("suunaSave");
+
     document.getElementById("battleButton").disabled = true;
 
     setTimeout(() => {
         alert("勝利！\nスゥナは失われた力を取り戻した。");
         location.reload();
     }, 300);
+
 }
 
 function gameOver(message) {
+
     log(`<span class="warning">${message}</span>`);
+
+    localStorage.removeItem("suunaSave");
+
     setTimeout(() => {
         alert("敗北……\n" + message);
         location.reload();
     }, 300);
+
 }
 
 function openUpgrade(){
@@ -1567,9 +1956,52 @@ function openStatus(){
     ).style.display = "flex";
 }
 
+function openLog(){
+
+    document
+        .getElementById(
+            "logModal"
+        )
+        .style.display = "flex";
+
+}
+
 function closeModal(id){
     document.getElementById(id)
         .style.display = "none";
+}
+
+function showResult(text){
+
+    document
+        .getElementById(
+            "resultText"
+        )
+        .innerHTML = text;
+
+    document
+        .getElementById(
+            "resultModal"
+        )
+        .style.display = "flex";
+
+}
+
+function closeResultModal(){
+
+    document
+        .getElementById(
+            "resultModal"
+        )
+        .style.display = "none";
+
+    if(
+        game.resonance >= 100 &&
+        !game.inBattle
+    ){
+        startNoiseBattle();
+    }
+
 }
 
 function openStory(){
@@ -1775,6 +2207,223 @@ function drawCard(actor){
 
 }
 
+function generatePath(){
+
+    // 超低確率
+    if(rand(1,1000) === 1){
+
+        return {
+            battle:0,
+            heal:0,
+            event:0,
+            rare:100
+        };
+
+    }
+
+    // 低確率
+    if(rand(1,100) <= 5){
+
+        return {
+            battle:0,
+            heal:100,
+            event:0,
+            rare:0
+        };
+
+    }
+
+    const rare = rand(0,10);
+    const battle = rand(0,100 - rare);
+    const heal = rand(0,100 - battle - rare);
+    const event = 100 - battle - heal - rare;
+
+    return {
+        battle,
+        heal,
+        event,
+        rare
+    };
+
+}
+
+function openPathSelect(){
+
+    leftPath = generatePath();
+    rightPath = generatePath();
+
+    document
+        .getElementById(
+            "leftPathInfo"
+        )
+        .innerHTML = `
+        戦闘 ${leftPath.battle}%<br>
+        回復 ${leftPath.heal}%<br>
+        イベント ${leftPath.event}%<br>
+        ??? ${leftPath.rare}%
+        `;
+
+    document
+        .getElementById(
+            "rightPathInfo"
+        )
+        .innerHTML = `
+        戦闘 ${rightPath.battle}%<br>
+        回復 ${rightPath.heal}%<br>
+        イベント ${rightPath.event}%<br>
+        ??? ${rightPath.rare}%
+        `;
+
+    document
+        .getElementById(
+            "pathModal"
+        )
+        .style.display = "flex";
+
+}
+
+function selectPath(path){
+
+    document
+        .getElementById(
+            "pathModal"
+        )
+        .style.display = "none";
+
+    const roll = rand(1,100);
+
+    if(roll <= path.battle){
+
+        doAdventure("残滓戦");
+
+    }
+    else if(
+        roll <=
+        path.battle + path.heal
+    ){
+
+        doAdventure("回復");
+
+    }
+    else if(
+        roll <=
+        path.battle +
+        path.heal +
+        path.event
+    ){
+
+        doAdventure(
+            "ランダムイベント"
+        );
+
+    }
+    else{
+
+        doAdventure("レアイベント");
+
+    }
+
+}
+
+function giveUpGame(){
+
+    localStorage.removeItem(
+        "suunaSave"
+    );
+
+    location.reload();
+
+}
+
+function openGiveUpModal(){
+
+    document
+        .getElementById(
+            "giveUpModal"
+        )
+        .style.display = "flex";
+
+}
+
+function showCutin(
+    image,
+    callback
+){
+
+    const modal =
+        document.getElementById(
+            "cutinModal"
+        );
+
+    document
+        .getElementById(
+            "cutinImage"
+        )
+        .src = image;
+
+    modal.style.display = "flex";
+
+    setTimeout(()=>{
+
+        modal.style.display = "none";
+
+        callback();
+
+    },1200);
+
+}
+
+window.onload = () => {
+
+    if(loadGame()){
+
+        document
+            .getElementById(
+                "startScreen"
+            )
+            .classList.add("hidden");
+
+        document
+            .getElementById(
+                "mainGame"
+            )
+            .classList.remove("hidden");
+
+        if(game.inBattle){
+
+            document
+                .getElementById(
+                    "fieldScreen"
+                )
+                .classList.add("hidden");
+
+            document
+                .getElementById(
+                    "noiseBattleScreen"
+                )
+                .classList.remove("hidden");
+
+            document
+                .getElementById(
+                    "battleArea"
+                )
+                .classList.remove("hidden");
+            
+            if(game.autoBattle){
+
+			    autoBattleLoop();
+
+			}
+
+        }
+
+        updateView();
+
+        log("セーブデータを読み込んだ。");
+
+    }
+
+};
 </script>
 
 </body>
