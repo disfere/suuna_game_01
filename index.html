@@ -752,6 +752,79 @@ button.small {
 
 }
 
+.noiseCatchContainer{
+
+    text-align:center;
+
+    width:100%;
+
+    max-width:520px;
+
+}
+
+.noiseCatchText{
+
+    font-size:56px;
+
+    font-weight:bold;
+
+    color:#d59cff;
+
+    letter-spacing:6px;
+
+    text-shadow:
+        0 0 12px rgba(255,255,255,0.25),
+        0 0 30px rgba(180,0,255,0.85),
+        0 0 60px rgba(180,0,255,0.45);
+
+    animation:
+        noiseCatchPulse 1s infinite;
+
+}
+
+.noiseCatchSub{
+
+    margin-top:24px;
+
+    font-size:24px;
+
+    line-height:1.8;
+
+}
+
+@keyframes noiseCatchPulse{
+
+    0%{
+        opacity:0.7;
+        transform:scale(1);
+    }
+
+    50%{
+        opacity:1;
+        transform:scale(1.04);
+    }
+
+    100%{
+        opacity:0.7;
+        transform:scale(1);
+    }
+
+}
+
+@keyframes noiseImageFade{
+
+    from{
+        opacity:0;
+        transform:scale(1.08);
+    }
+
+    to{
+        opacity:1;
+        transform:scale(1);
+    }
+
+}
+
 @keyframes cutinTextFade{
 
     0%{
@@ -790,6 +863,268 @@ button.small {
         transform:scale(1);
     }
 
+}
+
+.noiseCatchModal{
+
+    position:fixed;
+
+    inset:0;
+
+    background:black;
+
+    z-index:5000;
+
+    display:none;
+
+    justify-content:center;
+
+    align-items:center;
+
+    overflow:hidden;
+
+}
+
+.noiseCatchModal::before{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    background-image:
+        radial-gradient(
+            rgba(255,255,255,0.035) 1px,
+            transparent 1px
+        );
+
+    background-size:
+        4px 4px;
+
+    opacity:0.35;
+
+    pointer-events:none;
+
+    animation:
+        noiseOverlayMove 0.25s infinite;
+
+}
+
+@keyframes noiseOverlayMove{
+
+    0%{
+        transform:
+            translate(0px,0px);
+    }
+
+    25%{
+        transform:
+            translate(-1px,1px);
+    }
+
+    50%{
+        transform:
+            translate(1px,-1px);
+    }
+
+    75%{
+        transform:
+            translate(-1px,-1px);
+    }
+
+    100%{
+        transform:
+            translate(0px,0px);
+    }
+
+}
+
+.noiseCatchWord{
+
+    position:absolute;
+
+    font-size:64px;
+
+    font-weight:bold;
+
+    color:#d59cff;
+
+    letter-spacing:8px;
+
+    text-shadow:
+        0 0 12px rgba(255,255,255,0.15),
+        0 0 30px rgba(180,0,255,0.95),
+        0 0 80px rgba(180,0,255,0.55);
+
+    animation:
+	    noiseWordFade 2s ease,
+	    noiseWordShake 0.08s 24;
+
+}
+
+@keyframes noiseWordShake{
+
+    0%{
+        transform:translate(0px,0px);
+    }
+
+    25%{
+        transform:translate(-1px,1px);
+    }
+
+    50%{
+        transform:translate(1px,-1px);
+    }
+
+    75%{
+        transform:translate(-1px,-1px);
+    }
+
+    100%{
+        transform:translate(0px,0px);
+    }
+
+}
+
+.noiseCatchImage{
+
+    width:min(92vw,520px);
+
+	filter:
+	    drop-shadow(
+	        0 0 24px
+	        rgba(180,0,255,0.35)
+	    );
+}
+
+@keyframes noiseImageIdle{
+
+    0%{
+        transform:
+            scale(1)
+            translate(0px,0px);
+
+        filter:
+            brightness(1);
+    }
+
+    10%{
+        transform:
+            scale(1.01)
+            translate(-1px,1px);
+    }
+
+    20%{
+        transform:
+            scale(1.02)
+            translate(1px,-1px);
+    }
+
+    30%{
+        transform:
+            scale(1.01)
+            translate(-2px,0px);
+    }
+
+    40%{
+        transform:
+            scale(1.03)
+            translate(2px,1px);
+
+        filter:
+            brightness(1.15);
+    }
+
+    50%{
+        transform:
+            scale(1.02)
+            translate(0px,-1px);
+    }
+
+    60%{
+        transform:
+            scale(1.04)
+            translate(-1px,2px);
+    }
+
+    70%{
+        transform:
+            scale(1.02)
+            translate(1px,0px);
+
+        filter:
+            brightness(0.92);
+    }
+
+    80%{
+        transform:
+            scale(1.03)
+            translate(-2px,-1px);
+    }
+
+    90%{
+        transform:
+            scale(1.01)
+            translate(1px,1px);
+    }
+
+    100%{
+        transform:
+            scale(1)
+            translate(0px,0px);
+
+        filter:
+            brightness(1);
+    }
+
+}
+
+@keyframes noiseWordFade{
+
+    0%{
+        opacity:0;
+        transform:scale(1.08);
+    }
+
+    20%{
+        opacity:1;
+    }
+
+    70%{
+        opacity:1;
+    }
+
+    100%{
+        opacity:0;
+        transform:scale(0.98);
+    }
+
+}
+
+@keyframes noiseImageAppear{
+
+    from{
+        opacity:0;
+        transform:scale(1.08);
+    }
+
+    to{
+        opacity:1;
+        transform:scale(1);
+    }
+
+}
+
+.noiseIdle{
+
+    animation:
+        noiseImageIdle 2.2s infinite;
+
+}
+
+#resultModal{
+    z-index:6000;
 }
 
 </style>
@@ -1104,6 +1439,26 @@ button.small {
 
 </div>
 
+<div
+    id="noiseCatchModal"
+    class="noiseCatchModal"
+>
+
+    <div
+        id="noiseCatchWord"
+        class="noiseCatchWord hidden"
+    >
+        みーつけた
+    </div>
+
+    <img
+        id="noiseCatchImage"
+        class="noiseCatchImage hidden"
+        src="noise_cutin.png"
+    >
+
+</div>
+
 <div id="pathModal" class="modalOverlay">
 
     <div class="modalContent">
@@ -1371,7 +1726,8 @@ function startGame() {
         inBattle: false,
 
         autoBattle:false,
-        pendingNoiseBattle:false
+        pendingNoiseBattle:false,
+        inNoiseSequence:false
     };
 
     document.getElementById("startScreen").classList.add("hidden");
@@ -2059,25 +2415,21 @@ function closeResultModal(){
 
         game.pendingNoiseBattle = false;
 
-        showResult(`
-        <span class="resonanceUp">
-        共鳴率が100%に到達。
-        </span><br><br>
-
-        <span class="warning">
-        NOISEに捕捉された。
-        </span>
-        `);
-
-        game.startNoiseAfterModal = true;
+        showNoiseCatch();
 
         return;
 
     }
 
-    if(game.startNoiseAfterModal){
+    if(game.inNoiseSequence){
 
-        game.startNoiseAfterModal = false;
+        game.inNoiseSequence = false;
+
+        document
+            .getElementById(
+                "noiseCatchModal"
+            )
+            .style.display = "none";
 
         startNoiseBattle();
 
@@ -2458,6 +2810,90 @@ function showCutin(
         callback();
 
     },1200);
+
+}
+
+function showNoiseCatch(){
+
+    const modal =
+        document.getElementById(
+            "noiseCatchModal"
+        );
+
+    const word =
+        document.getElementById(
+            "noiseCatchWord"
+        );
+
+    const image =
+        document.getElementById(
+            "noiseCatchImage"
+        );
+
+    modal.style.display = "flex";
+
+    word.classList.add("hidden");
+	image.classList.add("hidden");
+	image.classList.remove("noiseIdle");
+
+	image.style.animation = "none";
+
+	void image.offsetWidth;
+
+    // みーつけた
+    setTimeout(()=>{
+
+        word.classList.remove(
+            "hidden"
+        );
+
+    },300);
+
+    // 消す
+    setTimeout(()=>{
+
+        word.classList.add(
+            "hidden"
+        );
+
+    },2300);
+
+    // NOISE画像
+    setTimeout(()=>{
+
+        image.classList.remove("hidden");
+		image.style.animation ="noiseImageAppear 1.5s forwards";
+        setTimeout(()=>{
+		    image.classList.add = "noiseIdle";
+		},1500);
+
+    },2800);
+
+    // リザルトモーダル
+    setTimeout(()=>{
+		game.inNoiseSequence = true;
+        showResult(`
+        <span class="resonanceUp">
+        共鳴率が100%に到達。
+        </span>
+        <br><br>
+        <span class="warning">
+        NOISEに捕捉された。
+        </span>
+        `);
+    },5200);
+
+}
+
+function startNoiseBattleSequence(){
+
+    document
+        .getElementById(
+            "noiseCatchModal"
+        )
+        .style.display = "none";
+
+    startNoiseBattle();
 
 }
 
