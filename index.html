@@ -1127,6 +1127,19 @@ button.small {
     z-index:6000;
 }
 
+#debugLabel{
+
+    margin-top:12px;
+
+    color:#ff8080;
+
+    font-size:14px;
+
+    letter-spacing:2px;
+
+    opacity:0.85;
+
+}
 </style>
 </head>
 
@@ -1172,6 +1185,13 @@ button.small {
                     START
                 </button>
 
+                <div
+				    id="debugLabel"
+				    class="hidden"
+				>
+				    デバッグモード
+				</div>
+
             </div>
 
         </div>
@@ -1213,7 +1233,7 @@ button.small {
 	        <div id="choiceArea" class="card">
 	            <div class="button-grid">
 	                <button onclick="openPathSelect()">冒険する</button>
-	                <button class="danger" onclick="startNoiseBattle()">NOISEに挑む</button>
+	                <button class="danger" onclick="showNoiseCatch('いらっしゃい')">NOISEに挑む</button>
 	                <button onclick="openUpgrade()">強化</button>
 	                <button onclick="openStatus()">ステータス</button>
 	                <button onclick="openLog()">ログ</button>
@@ -1598,6 +1618,10 @@ button.small {
 </div>
 
 <script>
+// デバッグ用 true or false
+const DEBUG_FAST_BATTLE = true;
+const DEBUG_MODE = DEBUG_FAST_BATTLE;
+
 let game;
 
 let leftPath = null;
@@ -2298,7 +2322,10 @@ function resolveNoiseAction(action) {
     const noiseHeal = Math.floor(12 * bonus);
 
     if (action === "攻撃") {
-        let damage = noiseAtk;
+        let damage = 
+		    DEBUG_FAST_BATTLE
+		    ? 300
+		    : noiseAtk;
 
         if (game.shield > 0) {
             const blocked = Math.min(game.shield, damage);
@@ -2813,8 +2840,7 @@ function showCutin(
 
 }
 
-function showNoiseCatch(){
-
+function showNoiseCatch(message="みーつけた"){
     const modal =
         document.getElementById(
             "noiseCatchModal"
@@ -2829,6 +2855,8 @@ function showNoiseCatch(){
         document.getElementById(
             "noiseCatchImage"
         );
+
+    word.innerText = message;
 
     modal.style.display = "flex";
 
@@ -2946,6 +2974,18 @@ window.onload = () => {
         log("セーブデータを読み込んだ。");
 
     }
+
+    if(DEBUG_MODE){
+
+    document
+        .getElementById(
+            "debugLabel"
+        )
+        .classList.remove(
+            "hidden"
+        );
+
+}
 
 };
 </script>
