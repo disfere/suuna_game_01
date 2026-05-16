@@ -632,10 +632,12 @@ button.small {
         url("field_bg.png");
 
     background-size:cover;
-    background-position:center;
+    background-position:0% center;
     background-repeat:no-repeat;
 
     padding:14px;
+    transition:
+	    background-position 1.2s ease;
 
 }
 
@@ -1140,6 +1142,60 @@ button.small {
     opacity:0.85;
 
 }
+
+.mainVisual{
+
+    display:flex;
+
+    justify-content:center;
+    align-items:center;
+
+    margin-top:20px;
+    margin-bottom:20px;
+
+    min-height:320px;
+
+}
+
+.suunaImage{
+
+    width:min(72vw,320px);
+
+    height:auto;
+
+    object-fit:contain;
+
+    filter:
+        drop-shadow(
+            0 0 18px
+            rgba(255,255,255,0.15)
+        )
+        drop-shadow(
+            0 0 40px
+            rgba(180,120,255,0.18)
+        );
+
+    animation:
+        suunaFloat 4s ease-in-out infinite;
+
+}
+
+@keyframes suunaFloat{
+
+    0%{
+        transform:translateY(0px);
+    }
+
+    50%{
+        transform:translateY(-8px);
+    }
+
+    100%{
+        transform:translateY(0px);
+    }
+
+}
+
 </style>
 </head>
 
@@ -1218,17 +1274,14 @@ button.small {
 	            </div>
 	        </div>
 
-	        <div class="card characters">
-	            <div class="char">
-	                <div class="face">🌿</div>
-	                <div>スゥナ</div>
-	            </div>
-	            <div class="vs">VS</div>
-	            <div class="char">
-	                <div class="face noise-face">🟥</div>
-	                <div>NOISE</div>
-	            </div>
-	        </div>
+			<div class="mainVisual">
+
+		        <img
+			        src="suuna_idle.png"
+			        class="suunaImage"
+			    >
+
+			</div>
 
 	        <div id="choiceArea" class="card">
 	            <div class="button-grid">
@@ -1251,7 +1304,7 @@ button.small {
 			</div>
 
 		    <div class="footer-note">
-		        MVP Prototype Ver.0.1
+		        MVP Prototype Ver.0.3
 		    </div>
 	    </div>
 
@@ -1304,7 +1357,7 @@ button.small {
 		    </div>
 
 		    <div class="footer-note">
-		        MVP Prototype Ver.0.2
+		        MVP Prototype Ver.0.3
 		    </div>
 	    </div>
 
@@ -1879,6 +1932,13 @@ function updateView() {
 
     renderUpgrades();
     saveGame();
+    
+    const resonancePos = game.resonance;
+
+	document.getElementById(
+	    "fieldScreen"
+	).style.backgroundPosition =
+	    `${resonancePos}% center`;
 }
 
 function showAdventureOptions() {
