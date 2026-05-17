@@ -2021,13 +2021,75 @@ button.small {
 
 }
 
+.systemHelpButton{
+
+    position:absolute;
+
+    top:110px;
+    right:30px;
+
+    z-index:9999;
+
+    padding:7px 14px;
+
+    border-radius:999px;
+
+    background:
+        rgba(0,0,0,0.42);
+
+    border:
+        1px solid rgba(255,255,255,0.12);
+
+    color:
+        rgba(255,255,255,0.82);
+
+    font-size:11px;
+
+    font-weight:bold;
+
+    letter-spacing:2px;
+
+    backdrop-filter:
+        blur(6px);
+
+    transition:0.2s;
+
+    box-shadow:
+        0 0 12px rgba(0,0,0,0.25);
+
+}
+
+.systemHelpButton:hover{
+
+    transform:
+        scale(1.05);
+
+    background:
+        rgba(120,80,255,0.24);
+
+    border:
+        1px solid rgba(180,120,255,0.35);
+
+    box-shadow:
+        0 0 16px rgba(160,120,255,0.35);
+
+}
+
 </style>
 </head>
 
 <body>
+
 <div id="noiseBg" class="noise-bg"></div>
 
 <div class="game">
+
+	<button
+	    class="systemHelpButton"
+	    onclick="openHelp()"
+	>
+	    HELP
+	</button>
 
     <div id="startScreen" class="startScreen">
 
@@ -2152,9 +2214,6 @@ button.small {
 				    >
 				        あきらめる
 				    </button>
-					<button onclick="openHelp()">
-					    ヘルプ
-					</button>
 				</div>
 				<div class="noiseButtonArea">
 				    <button
@@ -2377,27 +2436,33 @@ button.small {
             <h3>■ ゲームの流れ</h3>
 
             <p>
-            「冒険する」を押して探索を進めます。<br>
-            戦闘・回復・イベントなどを繰り返し、
-            スゥナを強化していきます。
+            冒険を通してスゥナを強化していき、最終的に「NOISE」という強敵に打ち勝つことが目的です。
             </p>
 
             <p>
-            共鳴率が100%になると、
-            NOISEとの戦闘が始まります。
+            基本は「冒険する」を押して探索を進めます。<br>
+            戦闘・回復・イベントなどを繰り返し、貯めたポイントでスゥナを強化できます。
             </p>
 
             <h3>■ 共鳴率</h3>
 
             <p>
-            スゥナとNOISEの繋がり。<br>
-            冒険を進めるほど上昇します。
+            スゥナとNOISEの繋がりであり、冒険を進めるほど上昇します。<br>
+            共鳴率が100%になるとNOISEに発見され、強制的にNOISEとの最終戦闘が始まります。
+            </p>
+
+            <h3>■ NOISEとの戦闘</h3>
+
+            <p>
+            NOISEとの戦闘はすべて自動で進みます。<br>
+            プレイヤーがスゥナの行動を手助けすることはできません。<br>
+            それを踏まえて、様々な強化を行ってください。
             </p>
 
             <h3>■ デッキ</h3>
 
             <p>
-            戦闘ではデッキからカードが自動で使用されます。
+            NOISEとの戦闘ではデッキからカードが自動で使用されます。
             </p>
 
             <p>
@@ -2410,15 +2475,23 @@ button.small {
             <h3>■ 失敗カード</h3>
 
             <p>
-            NOISEの侵食によって混入する危険なカード。<br>
-            行動失敗の原因になります。
+            NOISEの侵食によって混入するカードです。<br>
+            行動失敗の原因になります。<br>
+            プレイヤーの操作で枚数を増減させることができません。
             </p>
 
             <h3>■ 強化</h3>
 
             <p>
-            ptを消費して、
-            スゥナやデッキを強化できます。
+            冒険で得たptを消費して、スゥナやデッキを強化できます。<br>
+            カードの効果を高めたり、カードの枚数を変えて確率を調整したり、様々な強化をしてみてください。
+            </p>
+
+            <h3>■ NOISEに挑む</h3>
+
+            <p>
+            NOISEに発見される前に、こちらから最終戦闘を仕掛けることができます。<br>
+            わずかですがアドバンテージを得られます。
             </p>
 
         </div>
@@ -2627,7 +2700,7 @@ button.small {
 
 <script>
 // ===== CONFIG =====
-const GAME_VERSION = "Ver.0.3.8.1";
+const GAME_VERSION = "Ver.0.3.8.2";
 
 // デバッグ用 true or false
 const DEBUG_FAST_BATTLE = true;
