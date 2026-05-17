@@ -1797,6 +1797,199 @@ button.small {
 
 }
 
+.deckStatusGrid{
+
+    display:grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap:10px;
+
+    width:82%;
+
+    margin:auto;
+
+}
+
+.deckStatusCard{
+
+    position:relative;
+
+    aspect-ratio:0.74;
+
+    overflow:hidden;
+
+    border-radius:14px;
+
+    background:#050508;
+
+    box-shadow:
+        0 0 18px rgba(0,0,0,0.55),
+        0 0 24px rgba(160,80,255,0.12);
+
+}
+
+.deckStatusImage{
+
+    position:absolute;
+
+    inset:0;
+
+    width:100%;
+    height:100%;
+
+    object-fit:cover;
+
+    opacity:0.88;
+
+}
+
+.deckStatusOverlay{
+
+    position:absolute;
+
+    inset:0;
+
+    z-index:2;
+
+    display:flex;
+
+    align-items:flex-end;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(0,0,0,0.05),
+            rgba(0,0,0,0.35) 45%,
+            rgba(0,0,0,0.86)
+        );
+
+}
+
+.deckStatusParams{
+
+    width:100%;
+
+    padding:12px;
+
+    font-size:13px;
+
+    line-height:1.7;
+
+    color:
+        rgba(255,255,255,0.92);
+
+    text-shadow:
+        0 0 8px rgba(0,0,0,0.9);
+
+}
+
+.deckCardCount{
+
+    margin-top:6px;
+
+    font-size:16px;
+
+    font-weight:bold;
+
+    color:#d8b4ff;
+
+    text-shadow:
+        0 0 10px rgba(180,0,255,0.75);
+
+}
+
+.attackStatusCard{
+
+    box-shadow:
+        0 0 18px rgba(220,0,255,0.25);
+
+}
+
+.defenseStatusCard{
+
+    box-shadow:
+        0 0 18px rgba(120,160,255,0.22);
+
+}
+
+.healStatusCard{
+
+    box-shadow:
+        0 0 18px rgba(180,255,220,0.18);
+
+}
+
+.failureStatusCard{
+
+    box-shadow:
+        0 0 18px rgba(255,40,140,0.3);
+
+}
+
+.failureStatusCard .deckStatusImage{
+
+    animation:
+        failureCardGlitch 2.8s infinite;
+
+}
+
+.failureText{
+
+    color:#ff8bba;
+
+    font-weight:bold;
+
+    text-shadow:
+        0 0 10px rgba(255,0,120,0.75);
+
+}
+
+.deckTotalCount{
+
+    margin-top:18px;
+
+    text-align:center;
+
+    font-size:20px;
+
+    letter-spacing:2px;
+
+    color:#ffffff;
+
+    text-shadow:
+        0 0 12px rgba(180,120,255,0.55);
+
+}
+
+@keyframes failureCardGlitch{
+
+    0%{
+        transform:translate(0,0) scale(1);
+        filter:brightness(1);
+    }
+
+    20%{
+        transform:translate(-1px,1px) scale(1.01);
+    }
+
+    40%{
+        transform:translate(1px,-1px) scale(1);
+        filter:brightness(1.25);
+    }
+
+    60%{
+        transform:translate(-1px,0px) scale(1.015);
+    }
+
+    100%{
+        transform:translate(0,0) scale(1);
+        filter:brightness(1);
+    }
+
+}
+
 </style>
 </head>
 
@@ -2041,59 +2234,69 @@ button.small {
             ステータス
         </div>
 
-        <div class="stats">
+		<div class="deckStatusGrid">
 
-            <div class="stat-box">
-                攻撃力：
-                <span id="atkText"></span>
-            </div>
+		    <div class="deckStatusCard attackStatusCard">
+		        <img src="card_attack.png" class="deckStatusImage">
 
-            <div class="stat-box">
-                振れ幅：
-                <span id="rangeText"></span>
-            </div>
+		        <div class="deckStatusOverlay">
+		            <div class="deckStatusParams">
+		                <div>攻撃力：<span id="atkText"></span></div>
+		                <div>ぶれ幅：<span id="rangeText"></span></div>
+		                <div class="deckCardCount">
+		                    枚数：<span id="actAtkText"></span>
+		                </div>
+		            </div>
+		        </div>
+		    </div>
 
-            <div class="stat-box">
-                シールド：
-                <span id="shieldText"></span>
-            </div>
+		    <div class="deckStatusCard defenseStatusCard">
+		        <img src="card_defense.png" class="deckStatusImage">
 
-            <div class="stat-box">
-                残留：
-                <span id="remainText"></span>%
-            </div>
+		        <div class="deckStatusOverlay">
+		            <div class="deckStatusParams">
+		                <div>シールド：<span id="shieldText"></span></div>
+		                <div>残留率：<span id="remainText"></span>%</div>
+		                <div class="deckCardCount">
+		                    枚数：<span id="actDefText"></span>
+		                </div>
+		            </div>
+		        </div>
+		    </div>
 
-            <div class="stat-box">
-                回復：
-                <span id="healText"></span>
-            </div>
+		    <div class="deckStatusCard healStatusCard">
+		        <img src="card_heal.png" class="deckStatusImage">
 
-            <div class="stat-box">
-                解除率：
-                <span id="cleanseText"></span>%
-            </div>
+		        <div class="deckStatusOverlay">
+		            <div class="deckStatusParams">
+		                <div>回復力：<span id="healText"></span></div>
+		                <div>解除率：<span id="cleanseText"></span>%</div>
+		                <div class="deckCardCount">
+		                    枚数：<span id="actHealText"></span>
+		                </div>
+		            </div>
+		        </div>
+		    </div>
 
-            <div class="stat-box">
-                攻撃値：
-                <span id="actAtkText"></span>
-            </div>
+		    <div class="deckStatusCard failureStatusCard">
+		        <img src="card_failure.png" class="deckStatusImage">
 
-            <div class="stat-box">
-                防御値：
-                <span id="actDefText"></span>
-            </div>
+		        <div class="deckStatusOverlay">
+		            <div class="deckStatusParams">
+		                <div class="failureText">NOISE混入</div>
+		                <div class="deckCardCount">
+		                    枚数：<span id="actFailText"></span>
+		                </div>
+		            </div>
+		        </div>
+		    </div>
 
-            <div class="stat-box">
-                回復値：
-                <span id="actHealText"></span>
-            </div>
+		</div>
 
-            <div class="stat-box">
-                失敗値：
-                <span id="actFailText"></span>
-            </div>
-
-        </div>
+		<div class="deckTotalCount">
+		    デッキ枚数：
+		    <span id="deckTotalText"></span>
+		</div>
 
         <button
             class="closeBtn"
@@ -2320,7 +2523,7 @@ button.small {
 
 <script>
 // ===== CONFIG =====
-const GAME_VERSION = "Ver.0.3.7.2";
+const GAME_VERSION = "Ver.0.3.8.0";
 
 // デバッグ用 true or false
 const DEBUG_FAST_BATTLE = true;
@@ -2560,6 +2763,12 @@ function updateView() {
     document.getElementById("actHealText").innerText = game.actionHeal;
     document.getElementById("actFailText").innerText = game.actionFail;
 
+	document.getElementById("deckTotalText").innerText =
+	    game.actionAtk +
+	    game.actionDef +
+	    game.actionHeal +
+	    game.actionFail;
+
     if (game.inBattle) {
         document.getElementById("noiseHpText").innerText = `${game.noiseHp}/${game.noiseMaxHp}`;
         document.getElementById("battleTurnText").innerText = game.battleTurn;
@@ -2787,7 +2996,7 @@ function randomEvent() {
 		game.pendingResult = {
 		    resonance:resonanceGain
 		};
-        return `<span class="warning">NOISEの影が近づく。</span><br><br>失敗値が2増加した。<br>
+        return `<span class="warning">NOISEの影が近づく。</span><br><br>失敗カードが2枚追加。<br>
 		<span class="resonanceUp">
 		共鳴率が
 		${resonanceGain}%上昇した。
@@ -2819,9 +3028,9 @@ function renderUpgrades() {
     addUpgrade(list, "回復", "heal", costHeal());
     addUpgrade(list, "解除率", "cleanse", costCleanse());
 
-    addActionUpgrade(list, "攻撃値", "actionAtk");
-    addActionUpgrade(list, "防御値", "actionDef");
-    addActionUpgrade(list, "回復値", "actionHeal");
+    addActionUpgrade(list, "攻撃カード枚数", "actionAtk");
+    addActionUpgrade(list, "防御カード枚数", "actionDef");
+    addActionUpgrade(list, "回復カード枚数", "actionHeal");
 }
 
 function addUpgrade(parent, label, key, cost) {
