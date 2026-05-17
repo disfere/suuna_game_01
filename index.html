@@ -88,11 +88,35 @@ body {
 }
 
 .bar-wrap {
+
     margin-top: 6px;
+
     height: 12px;
-    background: rgba(0,0,0,0.4);
+
+    background:
+        rgba(255,255,255,0.08);
+
+    border:
+        1px solid rgba(255,255,255,0.12);
+
     border-radius: 999px;
+
     overflow: hidden;
+
+    box-shadow:
+        inset 0 0 10px rgba(0,0,0,0.45);
+
+}
+
+.bar-wrap.resonanceWrap{
+
+    border:
+        1px solid rgba(180,120,255,0.28);
+
+    box-shadow:
+        inset 0 0 12px rgba(0,0,0,0.55),
+        0 0 12px rgba(120,0,255,0.12);
+
 }
 
 .bar {
@@ -183,10 +207,89 @@ button.small {
     padding: 8px;
 }
 
-.button-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
+.mainButtonArea{
+
+    margin-bottom:12px;
+
+}
+
+.mainAdventureButton{
+
+    width:100%;
+
+    height:52px;
+
+    font-size:18px;
+
+    letter-spacing:2px;
+
+    border-radius:18px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #d8ffd8,
+            #bff0bf
+        );
+
+    box-shadow:
+        0 0 18px rgba(120,255,140,0.18);
+
+}
+
+.subButtonGrid{
+
+    display:grid;
+
+    grid-template-columns:repeat(4,1fr);
+
+    gap:6px;
+
+    margin-bottom:10px;
+
+}
+
+.subButtonGrid button{
+
+    height:32px;
+
+    font-size:11px;
+
+    border-radius:10px;
+
+    padding:0;
+
+}
+
+.noiseButtonArea{
+
+    margin-top:30px;
+
+}
+
+.noiseChallengeButton{
+
+    width:100%;
+
+    height:48px;
+
+    font-size:16px;
+
+    letter-spacing:1px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #ffb1b1,
+            #ff8b8b
+        );
+
+	border:
+		1px solid rgba(255,120,180,0.22);
+
+    box-shadow:
+        0 0 20px rgba(255,80,120,0.22);
+
 }
 
 .adventure-options {
@@ -1235,6 +1338,144 @@ button.small {
 
 }
 
+.suunaHpArea{
+
+    width:min(78vw,340px);
+
+    margin:
+        -10px auto 18px;
+
+}
+
+.suunaHpText{
+
+    font-size:14px;
+
+    margin-bottom:6px;
+
+    color:
+        rgba(255,255,255,0.88);
+
+    text-shadow:
+        0 0 8px rgba(0,0,0,0.7);
+
+}
+
+.suunaHpWrap{
+
+    height:16px;
+
+    background:
+        rgba(0,0,0,0.45);
+
+    border:
+        1px solid rgba(255,255,255,0.08);
+
+    box-shadow:
+        0 0 18px rgba(120,255,160,0.08);
+
+}
+
+.suunaStatusRow{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:6px;
+
+}
+
+.suunaPointText{
+
+    font-size:13px;
+
+    color:
+        rgba(255,240,180,0.92);
+
+    text-shadow:
+        0 0 8px rgba(0,0,0,0.7);
+
+    letter-spacing:1px;
+
+}
+
+.bar.resonance{
+
+    background:
+        linear-gradient(
+            90deg,
+
+            #7a5cff 0%,
+            #5b3fff 25%,
+            #8c2cff 50%,
+            #2b1464 75%,
+            #12051f 100%
+        );
+
+    animation:
+        resonancePulse 3.5s ease-in-out infinite;
+
+}
+
+@keyframes resonanceFlow{
+
+    0%{
+        background-position:0% 50%;
+    }
+
+    100%{
+        background-position:100% 50%;
+    }
+
+}
+
+@keyframes resonancePulse{
+
+    0%{
+
+        filter:
+            brightness(1);
+
+        box-shadow:
+            0 0 6px rgba(120,80,255,0.18);
+
+        transform:
+            scaleY(1);
+
+    }
+
+    50%{
+
+        filter:
+            brightness(1.35);
+
+        box-shadow:
+            0 0 18px rgba(140,60,255,0.45),
+            0 0 42px rgba(80,0,180,0.35);
+
+        transform:
+            scaleY(1.08);
+
+    }
+
+    100%{
+
+        filter:
+            brightness(1);
+
+        box-shadow:
+            0 0 6px rgba(120,80,255,0.18);
+
+        transform:
+            scaleY(1);
+
+    }
+
+}
+
 </style>
 </head>
 
@@ -1299,45 +1540,76 @@ button.small {
     <div id="mainGame" class="hidden">
     	<div id="fieldScreen">
 	        <div class="card">
-	            <div class="status-row">
-	                <span>スゥナ HP：<span id="suunaHpText"></span></span>
-	                <span>pt：<span id="pointText"></span></span>
-	            </div>
-	            <div class="bar-wrap">
-	                <div id="suunaHpBar" class="bar hp"></div>
-	            </div>
-
 	            <div class="status-row" style="margin-top:10px;">
 	                <span>共鳴率：<span id="resonanceText"></span>%</span>
 	                <span>冒険数：<span id="turnText"></span></span>
 	            </div>
-	            <div class="bar-wrap">
+	            <div class="bar-wrap resonanceWrap">
 	                <div id="resonanceBar" class="bar resonance"></div>
 	            </div>
 	        </div>
 
 			<div class="mainVisual">
-
-		        <img
+			    <img
 			        src="suuna_idle.png"
 			        class="suunaImage"
 			    >
-
+			</div>
+			<div class="suunaHpArea">
+				<div class="suunaStatusRow">
+				    <div class="suunaHpText">
+				        HP :
+				        <span id="suunaHpText"></span>
+				    </div>
+				    <div class="suunaPointText">
+				        <span id="pointText"></span> pt
+				    </div>
+				</div>
+			    <div class="bar-wrap suunaHpWrap">
+			        <div
+			            id="suunaHpBar"
+			            class="bar hp"
+			        ></div>
+			    </div>
 			</div>
 
-	        <div id="choiceArea" class="card">
-	            <div class="button-grid">
-	                <button onclick="openPathSelect()">冒険する</button>
-	                <button class="danger" onclick="
-	                	showNoiseBattleMessage('challenge');
-	                	showNoiseCatch('いらっしゃい')
-	                ">
-	                	NOISEに挑む</button>
-	                <button onclick="openUpgrade()">強化</button>
-	                <button onclick="openStatus()">ステータス</button>
-	                <button onclick="openLog()">ログ</button>
-	                <button class="danger" onclick="openGiveUpModal()">あきらめる</button>
-	            </div>
+	        <div id="choiceArea">
+				<div class="mainButtonArea">
+				    <button
+				        class="mainAdventureButton"
+				        onclick="openPathSelect()"
+				    >
+				        冒険する
+				    </button>
+				</div>
+				<div class="subButtonGrid">
+				    <button onclick="openUpgrade()">
+				        強化
+				    </button>
+				    <button onclick="openStatus()">
+				        ステータス
+				    </button>
+				    <button onclick="openLog()">
+				        ログ
+				    </button>
+				    <button
+				        class="danger"
+				        onclick="openGiveUpModal()"
+				    >
+				        あきらめる
+				    </button>
+				</div>
+				<div class="noiseButtonArea">
+				    <button
+				        class="danger noiseChallengeButton"
+				        onclick="
+				            showNoiseBattleMessage('challenge');
+				            showNoiseCatch('いらっしゃい')
+				        "
+				    >
+				        NOISEに挑む
+				    </button>
+				</div>
 	        </div>
 
 	        <div id="adventureArea" class="card hidden">
@@ -1718,7 +1990,7 @@ button.small {
 
 <script>
 // ===== CONFIG =====
-const GAME_VERSION = "Ver.0.3.3";
+const GAME_VERSION = "Ver.0.3.4";
 
 // デバッグ用 true or false
 const DEBUG_FAST_BATTLE = true;
