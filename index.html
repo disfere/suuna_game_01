@@ -1476,6 +1476,39 @@ button.small {
 
 }
 
+#resonanceBg{
+
+    position:absolute;
+
+    inset:0;
+
+    background-image:
+        url("resonance_bar_bg.png");
+
+    background-size:cover;
+
+    background-position:center;
+
+    opacity:0.1;
+
+    pointer-events:none;
+
+    transition:
+        opacity 0.4s;
+
+    mix-blend-mode:screen;
+
+}
+
+.resonanceCard{
+
+    position:relative;
+
+    overflow:hidden;
+
+    border-radius:22px;
+
+}
 </style>
 </head>
 
@@ -1539,7 +1572,8 @@ button.small {
 
     <div id="mainGame" class="hidden">
     	<div id="fieldScreen">
-	        <div class="card">
+	        <div class="card resonanceCard">
+		        <div id="resonanceBg"></div>
 	            <div class="status-row" style="margin-top:10px;">
 	                <span>共鳴率：<span id="resonanceText"></span>%</span>
 	                <span>冒険数：<span id="turnText"></span></span>
@@ -1990,7 +2024,7 @@ button.small {
 
 <script>
 // ===== CONFIG =====
-const GAME_VERSION = "Ver.0.3.4";
+const GAME_VERSION = "Ver.0.3.5";
 
 // デバッグ用 true or false
 const DEBUG_FAST_BATTLE = true;
@@ -2262,6 +2296,14 @@ function updateView() {
 	    "fieldScreen"
 	).style.backgroundPosition =
 	    `${resonancePos}% center`;
+
+	const resonanceAlpha =
+	    0.1 + (game.resonance / 100) * 0.8;
+
+	document.getElementById(
+	    "resonanceBg"
+	).style.opacity =
+	    resonanceAlpha;
 }
 
 function showAdventureOptions() {
