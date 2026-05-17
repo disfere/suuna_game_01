@@ -1340,6 +1340,8 @@ button.small {
 
 .suunaHpArea{
 
+    position:relative;
+
     width:min(78vw,340px);
 
     margin:
@@ -1509,6 +1511,102 @@ button.small {
     border-radius:22px;
 
 }
+
+.valuePopup{
+
+    position:absolute;
+
+    left:50%;
+
+    transform:
+        translateX(-50%);
+
+    font-size:28px;
+
+    font-weight:bold;
+
+    pointer-events:none;
+
+    opacity:0;
+
+    z-index:50;
+
+}
+
+.damagePopup{
+
+    color:#ff8b8b;
+
+    text-shadow:
+        0 0 12px rgba(255,80,80,0.7);
+
+}
+
+.healPopup{
+
+    color:#8fffaa;
+
+    text-shadow:
+        0 0 12px rgba(120,255,180,0.65);
+
+}
+
+#hpPopup{
+
+    top:-18px;
+
+}
+
+#resonancePopup{
+
+    top:12px;
+
+    color:#d59cff;
+
+    text-shadow:
+        0 0 16px rgba(180,0,255,0.75);
+
+}
+
+.popupShow{
+
+    animation:
+        popupFloat 1s forwards;
+
+}
+
+@keyframes popupFloat{
+
+    0%{
+
+        opacity:0;
+
+        transform:
+            translateX(-50%)
+            translateY(8px)
+            scale(0.9);
+
+    }
+
+    15%{
+
+        opacity:1;
+
+    }
+
+    100%{
+
+        opacity:0;
+
+        transform:
+            translateX(-50%)
+            translateY(-28px)
+            scale(1.05);
+
+    }
+
+}
+
 </style>
 </head>
 
@@ -1581,6 +1679,10 @@ button.small {
 	            <div class="bar-wrap resonanceWrap">
 	                <div id="resonanceBar" class="bar resonance"></div>
 	            </div>
+				<div
+				    id="resonancePopup"
+				    class="valuePopup hidden"
+				></div>
 	        </div>
 
 			<div class="mainVisual">
@@ -1605,6 +1707,10 @@ button.small {
 			            class="bar hp"
 			        ></div>
 			    </div>
+				<div
+				    id="hpPopup"
+				    class="valuePopup hidden"
+				></div>
 			</div>
 
 	        <div id="choiceArea">
@@ -2024,7 +2130,7 @@ button.small {
 
 <script>
 // ===== CONFIG =====
-const GAME_VERSION = "Ver.0.3.5";
+const GAME_VERSION = "Ver.0.3.6";
 
 // デバッグ用 true or false
 const DEBUG_FAST_BATTLE = true;
@@ -2138,6 +2244,7 @@ function startGame() {
         point: 0,
         resonance: 0,
         adventureCount: 0,
+        pendingResult:null,
 
         atk: 10,
         range: 10,
@@ -2335,9 +2442,11 @@ function doAdventure(type) {
         const reward = rand(20, 30);
         const resonanceGain = rand(8,12);
 
-        game.hp -= damage;
-        game.point += reward;
-        game.resonance += resonanceGain;
+		game.pendingResult = {
+		    hp:-damage,
+		    point:reward,
+		    resonance:resonanceGain
+		};
 
         const resultText = `
 		<span class="warning">
@@ -2377,9 +2486,12 @@ function doAdventure(type) {
         const healAmount = rand(25, 45);
         const reward = rand(5, 15);
         const resonanceGain = rand(3,7);
-        game.hp = Math.min(game.maxHp, game.hp + healAmount);
-        game.point += reward;
-        game.resonance += resonanceGain;
+
+		game.pendingResult = {
+		    hp:healAmount,
+		    point:reward,
+		    resonance:resonanceGain
+		};
 
         const resultText = `
 		<span class="good">
@@ -2406,7 +2518,9 @@ function doAdventure(type) {
 
 	    const reward = rand(50,100);
 
-	    game.point += reward;
+		game.pendingResult = {
+		    point:reward,
+		};
 
 	    const resultText = `
 	    <span class="good">
@@ -2438,19 +2552,19 @@ function doAdventure(type) {
         gameOver("スゥナは冒険の途中で力尽きた……");
         return;
     }
-
-    updateView();
 }
 
 function randomEvent() {
     const roll = rand(1, 100);
 
     const resonanceGain = rand(3,7);
-    game.resonance += resonanceGain;
 
     if (roll <= 25) {
         const reward = rand(5, 15);
-        game.point += reward;
+		game.pendingResult = {
+		    point:reward,
+		    resonance:resonanceGain
+		};
         return `小さな記憶を見つけた。<br><br>${reward}ptを得た。<br>
 		<span class="resonanceUp">
 		共鳴率が
@@ -2458,7 +2572,10 @@ function randomEvent() {
 		</span>`;
     } else if (roll <= 40) {
         const reward = rand(20, 30);
-        game.point += reward;
+		game.pendingResult = {
+		    point:reward,
+		    resonance:resonanceGain
+		};
         return `<span class="good">大きな記憶を見つけた。</span><br><br>${reward}ptを得た。<br>
 		<span class="resonanceUp">
 		共鳴率が
@@ -2466,7 +2583,10 @@ function randomEvent() {
 		</span>`;
     } else if (roll <= 55) {
         const damage = rand(10, 30);
-        game.hp -= damage;
+		game.pendingResult = {
+		    hp:-damage,
+		    resonance:resonanceGain
+		};
         return `<span class="warning">不穏な気配。</span><br><br>${damage}ダメージを受けた。<br>
 		<span class="resonanceUp">
 		共鳴率が
@@ -2474,6 +2594,9 @@ function randomEvent() {
 		</span>`;
     } else if (roll <= 70) {
         game.actionFail += 2;
+		game.pendingResult = {
+		    resonance:resonanceGain
+		};
         return `<span class="warning">NOISEの影が近づく。</span><br><br>失敗値が2増加した。<br>
 		<span class="resonanceUp">
 		共鳴率が
@@ -2481,6 +2604,9 @@ function randomEvent() {
 		</span>`;
     } else if (roll <= 85) {
         game.atk += 3;
+		game.pendingResult = {
+		    resonance:resonanceGain
+		};
         return `<span class="good">怒りの記憶。</span><br><br>攻撃力が3上がった。<br>
 		<span class="resonanceUp">
 		共鳴率が
@@ -2862,6 +2988,12 @@ function closeResultModal(){
             "resultModal"
         )
         .style.display = "none";
+
+	setTimeout(()=>{
+
+	    applyPendingResult();
+
+	},300);
 
     if(game.pendingNoiseBattle){
 
@@ -3370,6 +3502,90 @@ function startNoiseBattleSequence(){
         .style.display = "none";
 
     startNoiseBattle();
+
+}
+
+function applyPendingResult(){
+
+    if(!game.pendingResult){
+        return;
+    }
+
+	game.hp = Math.min(
+	    game.maxHp,
+	    game.hp +
+	    (game.pendingResult.hp || 0)
+	);
+
+	if(game.pendingResult.hp){
+	    const hpText =
+	        game.pendingResult.hp > 0
+	        ? `+${game.pendingResult.hp}`
+	        : `${game.pendingResult.hp}`;
+		showPopup(
+		    "hpPopup",
+		    hpText,
+		    game.pendingResult.hp > 0
+		    ? "healPopup"
+		    : "damagePopup"
+		);
+	}
+
+    game.resonance +=
+        game.pendingResult.resonance || 0;
+
+	if(game.pendingResult.resonance){
+	    showPopup(
+	        "resonancePopup",
+	        `+${game.pendingResult.resonance}%`
+	    );
+	}
+
+    game.point +=
+        game.pendingResult.point || 0;
+
+    game.pendingResult = null;
+
+    updateView();
+
+}
+
+function showPopup(id,text,type=""){
+
+    const popup =
+        document.getElementById(id);
+
+    popup.innerText = text;
+
+	popup.classList.remove(
+	    "damagePopup",
+	    "healPopup"
+	);
+
+	if(type){
+
+	    popup.classList.add(type);
+
+	}
+
+    popup.classList.remove(
+        "hidden",
+        "popupShow"
+    );
+
+    void popup.offsetWidth;
+
+    popup.classList.add(
+        "popupShow"
+    );
+
+    setTimeout(()=>{
+
+        popup.classList.add(
+            "hidden"
+        );
+
+    },1000);
 
 }
 
