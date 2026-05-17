@@ -50,13 +50,11 @@ body {
     position: relative;
     z-index: 2;
 
-    width:100vw;
-    min-height:100vh;
+    max-width: 520px;
 
-    margin:0 auto;
-    padding:0;
+    margin: 0 auto;
 
-    overflow:hidden;
+    padding: 14px;
 
 }
 
@@ -1757,11 +1755,11 @@ button.small {
     html,
     body{
 
-        width:100%;
-        min-height:100%;
-
         margin:0;
         padding:0;
+
+        width:100%;
+        min-height:100%;
 
         overflow-x:hidden;
 
@@ -1770,6 +1768,8 @@ button.small {
     }
 
     .game{
+
+        max-width:none;
 
         width:100vw;
         min-height:100vh;
@@ -1785,6 +1785,11 @@ button.small {
         min-height:100vh;
 
         border-radius:0;
+
+        padding:14px;
+
+        background-size:cover;
+        background-position:center;
 
     }
 
@@ -2313,7 +2318,7 @@ button.small {
 
 <script>
 // ===== CONFIG =====
-const GAME_VERSION = "Ver.0.3.7.1";
+const GAME_VERSION = "Ver.0.3.7.2";
 
 // デバッグ用 true or false
 const DEBUG_FAST_BATTLE = true;
