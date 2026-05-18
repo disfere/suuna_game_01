@@ -149,6 +149,7 @@
 				    <button
 				        class="noiseChallengeButton"
 				        onclick="
+					        game.battleFirstTurn='suuna';
 				            showNoiseBattleMessage('challenge');
 				            showNoiseCatch('いらっしゃい')
 				        "
@@ -643,7 +644,7 @@
 
 <script>
 // ===== CONFIG =====
-const GAME_VERSION = "Ver.0.4.0.1";
+const GAME_VERSION = "Ver.0.4.0.2";
 
 // デバッグ用 true or false
 const DEBUG_FAST_BATTLE = true;
@@ -777,6 +778,8 @@ function startGame() {
         noiseHp: 200,
         noiseShield: 0,
         battleTurn: 0,
+        turnOwner: "suuna",
+        battleFirstTurn: "suuna",
         inBattle: false,
 
         autoBattle:false,
@@ -1266,11 +1269,14 @@ function startNoiseBattle() {
     if (game.inBattle) return;
 
     game.inBattle = true;
-    game.battleTurn = 0;
+    game.battleTurn = 1;
     game.noiseMaxHp = Math.floor(200 * (1 + game.resonance / 100));
     game.noiseHp = game.noiseMaxHp;
     game.noiseShield = 0;
     game.shield = 0;
+
+	game.turnOwner =
+	    game.battleFirstTurn;
 
 	document
 	    .getElementById(
@@ -1294,6 +1300,7 @@ function startNoiseBattle() {
     updateView();
 
 	// 自動戦闘開始
+	game.pendingNoiseBattle = false;
 	startAutoBattle();
 }
 
@@ -1334,7 +1341,9 @@ async function autoBattleLoop(){
         return;
     }
 
-    autoBattleLoop();
+	setTimeout(()=>{
+	    autoBattleLoop();
+	},100);
 
 }
 
@@ -1342,31 +1351,45 @@ async function battleTurn(){
 
     if (!game.inBattle) return;
 
-    game.battleTurn++;
+    if(game.turnOwner === "suuna"){
 
-    updateView();
-
-    await showTurnLabel();
-
-    await suunaTurn();
-
-    if(game.noiseHp <= 0){
-
-        gameClear();
-
-        return;
-
-    }
-
-    await noiseTurn();
-
-    if(game.hp <= 0){
-
-        gameOver(
-            "スゥナはNOISEに敗北した……"
+        await showTurnLabel(
+            `SUuNA TURN ${game.battleTurn}`
         );
 
-        return;
+        await suunaTurn();
+
+        if(game.noiseHp <= 0){
+
+            gameClear();
+
+            return;
+
+        }
+
+        game.turnOwner = "noise";
+
+    }else{
+
+        await showTurnLabel(
+            `NOISE TURN`
+        );
+
+        await noiseTurn();
+
+        if(game.hp <= 0){
+
+            gameOver(
+                "スゥナはNOISEに敗北した……"
+            );
+
+            return;
+
+        }
+
+        game.turnOwner = "suuna";
+
+        game.battleTurn++;
 
     }
 
@@ -1458,15 +1481,14 @@ async function showBattleCard(action){
 
 }
 
-async function showTurnLabel(){
+async function showTurnLabel(text){
 
     const label =
         document.getElementById(
             "battleTurnLabel"
         );
 
-    label.innerText =
-        `TURN ${game.battleTurn}`;
+    label.innerText = text;
 
     label.classList.remove(
         "hidden"
@@ -1557,6 +1579,9 @@ function resolveNoiseAction(action) {
 
 function gameClear() {
 
+	game.autoBattle = false;
+	game.inBattle = false;
+
     log(`<span class="good">NOISEを討伐した。</span>`);
 
     localStorage.removeItem("suunaSave");
@@ -1569,6 +1594,9 @@ function gameClear() {
 }
 
 function gameOver(message) {
+
+	game.autoBattle = false;
+	game.inBattle = false;
 
     log(`<span class="warning">${message}</span>`);
 
@@ -1638,17 +1666,19 @@ function closeResultModal(){
 
 	},300);
 
-    if(game.pendingNoiseBattle){
+	if(game.pendingNoiseBattle){
 
-        game.pendingNoiseBattle = false;
+	    game.battleFirstTurn = "noise";
 
-        showNoiseBattleMessage("forced");
+	    game.pendingNoiseBattle = false;
 
-        showNoiseCatch();
+	    showNoiseBattleMessage("forced");
 
-        return;
+	    showNoiseCatch();
 
-    }
+	    return;
+
+	}
 
     if(game.inNoiseSequence){
 
