@@ -2095,7 +2095,16 @@ button.small {
 
     justify-content:space-between;
 
-    min-height:100vh;
+    height:100dvh;
+
+    overflow:hidden;
+
+    position:relative;
+
+    padding:
+        env(safe-area-inset-top)
+        0
+        env(safe-area-inset-bottom);
 
 }
 
@@ -2123,6 +2132,8 @@ button.small {
 
     flex:1;
 
+    min-height:0;
+
     display:flex;
 
     justify-content:center;
@@ -2133,19 +2144,32 @@ button.small {
 
     overflow:hidden;
 
+    padding:20px;
+
 }
 
 .battleCardImage{
 
-    width:min(52vw,220px);
+    width:min(42vw,180px);
+
+    max-height:42vh;
+
+    object-fit:contain;
 
     border-radius:16px;
 
     box-shadow:
         0 0 30px rgba(255,255,255,0.12);
 
-    animation:
-        battleCardAppear 0.5s ease;
+}
+
+.battleHpText{
+
+    font-size:clamp(
+        18px,
+        2.4vw,
+        28px
+    );
 
 }
 
@@ -2306,5 +2330,21 @@ button.small {
         opacity:0;
 
     }
+
+}
+
+.battleTopArea{
+
+    padding:20px 16px 0;
+
+    flex-shrink:0;
+
+}
+
+.battleBottomArea{
+
+    padding:0 16px 24px;
+
+    flex-shrink:0;
 
 }
