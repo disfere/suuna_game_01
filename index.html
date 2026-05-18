@@ -174,51 +174,64 @@
 
 	    <div id="noiseBattleScreen" class="hidden">
 
-	        <div id="battleArea" class="card hidden">
-	            <h3>NOISE戦</h3>
-				<div class="status-row">
+			<div id="battleArea" class="battleContainer hidden">
+			    <!-- NOISE HP -->
+			    <div class="battleTopArea">
+			        <div class="battleHpText">
+			            NOISE HP
+			            <span id="noiseHpText"></span>
+			        </div>
+			        <div class="bar-wrap">
+			            <div
+			                id="noiseHpBar"
+			                class="bar noisehp"
+			            ></div>
+			        </div>
+			    </div>
+			    <!-- 中央演出 -->
+			    <div id="battleVisualArea">
 
-				    <span>
-				        スゥナ HP：
-				        <span id="battleSuunaHpText"></span>
-				    </span>
+			        <div
+			            id="battleTurnLabel"
+			            class="battleTurnLabel hidden"
+			        >
+			            TURN 1
+			        </div>
 
-				    <span>
-				        NOISE HP：
-				        <span id="noiseHpText"></span>
-				    </span>
+			        <img
+			            id="battleCardImage"
+			            class="battleCardImage hidden"
+			            src=""
+			        >
 
-				</div>
+			        <div
+			            id="battleActionText"
+			            class="battleActionText hidden"
+			        >
+			            ATTACK
+			        </div>
 
-				<div class="bar-wrap">
-				    <div
-				        id="battleSuunaHpBar"
-				        class="bar hp"
-				    ></div>
-				</div>
-
-				<div class="bar-wrap" style="margin-top:8px;">
-				    <div
-				        id="noiseHpBar"
-				        class="bar noisehp"
-				    ></div>
-				</div>
-
-				<div
-				    class="status-row"
-				    style="margin-top:10px;"
-				>
-				    <span>
-				        Turn：
-				        <span id="battleTurnText"></span>
-				    </span>
-				</div>
-	            <button id="battleButton" class="dark" style="width:100%; margin-top:10px;" onclick="startAutoBattle()">戦闘開始</button>
-	        </div>
-		    <div class="card">
-		        <h3>ログ</h3>
-		        <div id="battleLog" class="log"></div>
-		    </div>
+			        <div
+			            id="battleDamageText"
+			            class="battleDamageText hidden"
+			        >
+			            -20
+			        </div>
+			    </div>
+			    <!-- スゥナHP -->
+			    <div class="battleBottomArea">
+			        <div class="battleHpText">
+			            SUuNA HP
+			            <span id="battleSuunaHpText"></span>
+			        </div>
+			        <div class="bar-wrap">
+			            <div
+			                id="battleSuunaHpBar"
+			                class="bar hp"
+			            ></div>
+			        </div>
+			    </div>
+			</div>
 
             <div
 			    class="versionText"
@@ -236,6 +249,10 @@
         <div class="modalTitle">
             強化
         </div>
+		<div class="upgradePointArea">
+		    現在pt：
+		    <span id="upgradePointText"></span>
+		</div>
 
         <div id="upgradeList"></div>
 
@@ -630,7 +647,7 @@
 
 <script>
 // ===== CONFIG =====
-const GAME_VERSION = "Ver.0.3.9.0";
+const GAME_VERSION = "Ver.0.4.0.0";
 
 // デバッグ用 true or false
 const DEBUG_FAST_BATTLE = true;
@@ -812,41 +829,55 @@ function loadGame(){
 }
 
 function log(text) {
-	const fieldLog =
-	    document.getElementById(
-	        "fieldLog"
-	    );
 
-	const battleLog =
-	    document.getElementById(
-	        "battleLog"
-	    );
+    const fieldLog =
+        document.getElementById(
+            "fieldLog"
+        );
 
-	const p1 =
-	    document.createElement("p");
+    if(fieldLog){
 
-	p1.innerHTML = text;
+        const p1 =
+            document.createElement("p");
 
-	fieldLog.prepend(p1);
+        p1.innerHTML = text;
 
-	const p2 =
-	    document.createElement("p");
+        fieldLog.prepend(p1);
 
-	p2.innerHTML = text;
+    }
 
-	battleLog.prepend(p2);
+    const battleLog =
+        document.getElementById(
+            "battleLog"
+        );
 
-	const modalLog =
-	    document.getElementById(
-	        "modalLog"
-	    );
+    if(battleLog){
 
-	const p3 =
-	    document.createElement("p");
+        const p2 =
+            document.createElement("p");
 
-	p3.innerHTML = text;
+        p2.innerHTML = text;
 
-	modalLog.prepend(p3);
+        battleLog.prepend(p2);
+
+    }
+
+    const modalLog =
+        document.getElementById(
+            "modalLog"
+        );
+
+    if(modalLog){
+
+        const p3 =
+            document.createElement("p");
+
+        p3.innerHTML = text;
+
+        modalLog.prepend(p3);
+
+    }
+
 }
 
 function updateView() {
@@ -854,6 +885,13 @@ function updateView() {
     document.getElementById("pointText").innerText = game.point;
     document.getElementById("resonanceText").innerText = Math.floor(game.resonance);
     document.getElementById("turnText").innerText = game.adventureCount;
+
+	const upgradePoint =
+	    document.getElementById("upgradePointText");
+
+	if(upgradePoint){
+	    upgradePoint.innerText = game.point;
+	}
 
     document.getElementById("suunaHpBar").style.width = `${Math.max(0, game.hp / game.maxHp * 100)}%`;
     document.getElementById("resonanceBar").style.width = `${Math.min(100, game.resonance)}%`;
@@ -878,7 +916,6 @@ function updateView() {
 
     if (game.inBattle) {
         document.getElementById("noiseHpText").innerText = `${game.noiseHp}/${game.noiseMaxHp}`;
-        document.getElementById("battleTurnText").innerText = game.battleTurn;
         document.getElementById("noiseHpBar").style.width = `${Math.max(0, game.noiseHp / game.noiseMaxHp * 100)}%`;
         document
 		    .getElementById(
@@ -1259,6 +1296,9 @@ function startNoiseBattle() {
 
     log(`<span class="warning">NOISEが現れた。</span> 最終戦闘開始。`);
     updateView();
+
+	// 自動戦闘開始
+	startAutoBattle();
 }
 
 function weightedAction(actor){
@@ -1275,17 +1315,11 @@ function startAutoBattle(){
 
     game.autoBattle = true;
 
-    document
-        .getElementById(
-            "battleButton"
-        )
-        .disabled = true;
-
     autoBattleLoop();
 
 }
 
-function autoBattleLoop(){
+async function autoBattleLoop(){
 
     if(
         !game.inBattle ||
@@ -1295,7 +1329,7 @@ function autoBattleLoop(){
         return;
     }
 
-    battleTurn();
+    await battleTurn();
 
     if(
         game.hp <= 0 ||
@@ -1304,41 +1338,150 @@ function autoBattleLoop(){
         return;
     }
 
-    setTimeout(
-        autoBattleLoop,
-        1200
-    );
+    autoBattleLoop();
 
 }
 
-function battleTurn() {
+async function battleTurn(){
+
     if (!game.inBattle) return;
 
     game.battleTurn++;
-    game.noiseShield = 0;
-
-    const suunaAction = weightedAction("suuna");
-    const noiseAction = weightedAction("noise");
-
-    log(`--- Turn ${game.battleTurn} ---`);
-
-    resolveSuunaAction(suunaAction);
-
-    if (game.noiseHp <= 0) {
-        gameClear();
-        return;
-    }
-
-    resolveNoiseAction(noiseAction);
-
-    game.shield = Math.floor(game.shield * (game.remain / 100));
-
-    if (game.hp <= 0) {
-        gameOver("スゥナはNOISEに敗北した……");
-        return;
-    }
 
     updateView();
+
+    await showTurnLabel();
+
+    await suunaTurn();
+
+    if(game.noiseHp <= 0){
+
+        gameClear();
+
+        return;
+
+    }
+
+    await noiseTurn();
+
+    if(game.hp <= 0){
+
+        gameOver(
+            "スゥナはNOISEに敗北した……"
+        );
+
+        return;
+
+    }
+
+}
+
+async function suunaTurn(){
+
+    const action =
+        weightedAction("suuna");
+
+    resolveSuunaAction(action);
+
+    await showBattleCard(action);
+
+    updateView();
+
+    await wait(1000);
+
+}
+
+async function noiseTurn(){
+
+    const action =
+        weightedAction("noise");
+
+    resolveNoiseAction(action);
+
+    await showBattleCard(action);
+
+    updateView();
+
+    await wait(1000);
+
+}
+
+async function showBattleCard(action){
+
+    const card =
+        document.getElementById(
+            "battleCardImage"
+        );
+
+    const text =
+        document.getElementById(
+            "battleActionText"
+        );
+
+    const damage =
+        document.getElementById(
+            "battleDamageText"
+        );
+
+    let image = "";
+
+    if(action === "攻撃"){
+        image = "card_attack.png";
+    }
+
+    if(action === "防御"){
+        image = "card_defense.png";
+    }
+
+    if(action === "回復"){
+        image = "card_heal.png";
+    }
+
+    if(action === "失敗"){
+        image = "card_failure.png";
+    }
+
+    card.src = image;
+
+    card.classList.remove("hidden");
+    text.classList.remove("hidden");
+
+    text.innerText = action;
+
+    await wait(800);
+
+    damage.innerText = "...";
+
+    damage.classList.remove("hidden");
+
+    await wait(800);
+
+    card.classList.add("hidden");
+    text.classList.add("hidden");
+    damage.classList.add("hidden");
+
+}
+
+async function showTurnLabel(){
+
+    const label =
+        document.getElementById(
+            "battleTurnLabel"
+        );
+
+    label.innerText =
+        `TURN ${game.battleTurn}`;
+
+    label.classList.remove(
+        "hidden"
+    );
+
+    await wait(1000);
+
+    label.classList.add(
+        "hidden"
+    );
+
 }
 
 function resolveSuunaAction(action) {
@@ -1421,8 +1564,6 @@ function gameClear() {
     log(`<span class="good">NOISEを討伐した。</span>`);
 
     localStorage.removeItem("suunaSave");
-
-    document.getElementById("battleButton").disabled = true;
 
     setTimeout(() => {
         alert("勝利！\nスゥナは失われた力を取り戻した。");
@@ -2102,6 +2243,14 @@ function openHelp(){
             "helpModal"
         )
         .style.display = "flex";
+
+}
+
+function wait(ms){
+
+    return new Promise(resolve=>{
+        setTimeout(resolve, ms);
+    });
 
 }
 
